@@ -28,7 +28,7 @@ zenity_scattering_error(){
 }
 
 
-# Description: 1st xcowsay that has 2 text options
+# Description: 
 # Arguments: $1 - The text to be displayed in the xcowsay dialog
 xcowsay_text(){
  	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "$1"
@@ -38,7 +38,7 @@ xcowsay_text(){
 # Description: present a zenity entry dialog to the user and returns the input for the quiz
 # Arguments: $1 - The question text
 perguntar(){
-	zenity --no-cancel --entry --height 300 --width 500 --info --title "Teste" --text "$1"
+	zenity --no-cancel --entry --height 300 --width 500 --info --title "Teste$1:" --text "$2"
 }
 
 
@@ -120,20 +120,20 @@ main (){
 	trap_end_signal
 	zenity --no-cancel --info --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
 	
-	perguntar "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances..."
+	perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances..."
 	local answer1
 
-	answer1="$(perguntar "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")"
+	answer1="$(perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")"
 
 	if [ "${answer1}" == "mkdir" ]; then
 		zenity --no-cancel --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 	else trigger_penalty1
 	fi
 
-  	perguntar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances..."
+  	perguntar "2" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances..."
   	local answer2
 
-  	answer2="$(perguntar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")"
+  	answer2="$(perguntar "2" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")"
  	if [ "${answer2}" == "chmod" ]; then
 		zenity --no-cancel --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 		sleep 4
