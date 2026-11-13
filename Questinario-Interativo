@@ -8,16 +8,18 @@ readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 # Description: requests acess to root permission in order to run the .sh file
 # Arguments:
 get_root (){
-	pkexec /user/bin/id
+	pkexec /usr/bin/id
 	}
 
 
 # Function: prepare_workspace
-# Description: installs necessary apps and programs
+# Description: updates, installs necessary apps and programs and traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 # Arguments:
 prepare_workspace(){
 	sudo apt update 
-	sudo apt install xinput xcowsay zenity 
+	sudo apt install xinput xcowsay zenity
+	trap "" SIGINT SIGTERM
+	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/ceu.jpeg
 }
 
 
@@ -32,61 +34,28 @@ wallpaper_effect_on() {
 }
 
 
-# Function: zenity_scattering_error1
+# Function: zenity_scattering_error
 # Description: 
 # Wrote by: Helvecio
-zenity_scattering_error1(){
-	zenity --warning --text "VoCê ErRoUuUuUuUuUu :("\
-	--width=260 --height=120 --timeout 15 \	x=$(($RANDOM % 1920)) y=$(($RANDOM % 1080)) 
+zenity_scattering_error(){
+	zenity --warning --text $1 --width=260 --height=120 --timeout 15 
 }
 
 
-# Function: zenity_scattering_error2
-# Description: zenity that shows error message as it scatter across the display
-# Wrote by: Helvecio
-zenity_scattering_error2 (){
-	zenity --warning --text "Dê tchau ao seu PC" --title "Aviso" --width 260 --height 120 --timeout 15
-}
-
-
-# Function: xcowsay1
+# Function: xcowsay_text
 # Description: 1st xcowsay that has 2 text options
 # Wrote by: Helvecio
-xcowsay1(){
- 	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO"
+xcowsay_text(){
+ 	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg $1
 }
 
 
-# Function: xcowsay2
-# Description: 2nd xcowsay
+# Function: testar 
+# Description: function for test prompt
 # Wrote by: Helvecio
-xcowsay2(){
- 	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "AGORA SEU PC MORRERÁ :("	
-}
+testar(){
+	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text $1
 
-
-# Function: xcowsay3
-# Description: 3rd xcowsay
-# Wrote by: Helvecio
-xcowsay3(){
-  	xcowsay -t 7 --cow-size small --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" 
-}
-
-
-# Function: teste1
-# Description: 1st test for the player
-# Wrote by: Helvecio
-teste1(){
-	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text "Na verdade, o teste começará agora, boa sorte!"
-}
-
-
-# Function: teste1
-# Description: 2nd test for the player
-# Wrote by: Helvecio
-teste2(){
-	zenity --entry --height 300 --width 500 --title "Teste 2:" \
-  	--text "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")
 }
 
 
@@ -95,11 +64,25 @@ teste2(){
 # Wrote by: Helvecio
 disable_mouse(){
 	mouse=$(xinput list --id-only "Virtual core pointer")
-	if [ "${mouse}" = 0 ]; then
+	if [ "${mouse}" = "Virtual core pointer" ]; then
 		xinput disable "Virtual core pointer" 
 	fi
 }
 
+
+# Function: dirNfile_generator
+# Description: makes tons of dir's and files and expands it 
+# Wrote by: Helvecio
+# Arguments:
+dirNfile_generator(){
+	# dir generator
+	for i in {1..100}; do mkdir ~/Desktop/ola$i& done
+
+	# file generator
+	yes uouououououou | head 50000 >> ~/Downloads/yes$i.txt
+	truncate -s 1G ~/Downloads/yes$i.txt
+	for i in {1..40}; do cp ~/Downloads/yes$i.txt ~/Desktop/ola$i/ola$i.txt
+}
 
 # Function: trigger_penalty1
 # Description: first penalty if wrong input in 1st question
@@ -108,12 +91,18 @@ disable_mouse(){
 trigger_penalty1(){
 	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 3
-	for i in {1..50}; do zenity_scattering_error1 & done
-	wallpaper_effect_on
-	for i in {1..60}; do xcowsay1 & done
-	for i in {1..30}; do xcowsay2 & done
-	for i in {1..100}; do cp ~/Scripts/invasao.txt ~/Desktop/Adeus$i.txt & done
-	for i in {1..100}; do cp ~/Scripts/invasao.txt //*$i & done 
+
+	# solução para mover os xeninty
+
+	for i in {1..50}; do sleep 0.250; wmctrl -r "zenity$i" -e 0,$(($RANDOM % 1920)),$(($RANDOM % 1080)),-1,-1 &
+	 
+
+	for i in {1..50}; do zenity_scattering_error "VoCê ErRoUuUuUuUuUu :(" & done
+	wallpaper_effect_on;
+	for i in {1..60}; do xcowsay_text "ERRAAAAADOOOOO" & done
+	for i in {1..30}; do xcowsay_text "AGORA SEU MOUSE MORRERÁ" & done
+	dirNfile_generator
+	for i in {1..100}; do cp ~/Scripts/invasao.txt /*/ & done
 	disable_mouse
 	exit 1
 }
@@ -127,10 +116,10 @@ trigger_penalty2 (){
 
 	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
-	for i in {1..50}; do zenity_scattering_error1 & done
+	for i in {1..50}; do zenity_scattering_error "VoCê ErRoUuUuUuUuUu :(" & done
 	wallpaper_effect_on
-	for i in {1..30}; do xcowsay3 & done
-	for i in {1..50}; do zenity_scattering_error2 & done
+	for i in {1..30}; do xcowsay_text "NÃOOOOOOOOOOO" & done
+	for i in {1..50}; do zenity_scattering_error "Dê tchau ao seu mouse" & done
 	xcowsay -t 6 --cow-size med "CONTAGEM REGRESSIVA:" 
 	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
 	for i in {1..300}; do xcowsay -t 2 --cow-size small --image ~/Downloads/squirward.jpeg & done
@@ -146,6 +135,7 @@ complete_challenge(){
 	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
 	zenity --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
 	--text "Agora, preencha seu relatorio no arquivo jornada.txt";
+	sleep 3
 	echo -e "\n#Meu nome é: (SEU NOME) e eu sobrevivi a essa dura jornada." >> ~/Downloads/jornada.txt &
 	xed ~/Downloads/jornada.txt 
 }
@@ -156,21 +146,26 @@ complete_challenge(){
 main (){ 
 	get_root
 	prepare_workspace
-	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text "Na verdade, o teste começará agora, boa sorte!"
-
+	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text "Na verdade, o testar começará agora, boa sorte!"
+	
+	testar1
 	local answer1
 
-	answer1="$(teste1)"
+	answer1="$(testar "Qual o nome do comando que cria uma pasta ?\
+	pense antes, não haverá segundas chances...")
+
 	if [ "${answer1}" = "mkdir" ]; then
 		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 	else trigger_penalty1
   	fi
 
+  	testar2
   	local answer2
 
-  	answer2="$(teste2)"
+  	answer2="$(testar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")")"
  	if [ "${answer2}" = "chmod" ]; then
 		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
+		sleep 4
 		complete_challenge
 	else
 		trigger_penalty2
