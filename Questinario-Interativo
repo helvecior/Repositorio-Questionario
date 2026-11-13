@@ -3,24 +3,18 @@
 # XFCE property path for wallpaper_effect
 readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
-# Function: get_root
 # Description: requests acess to root permission in order to run the .sh file
-# Arguments:
 get_root (){
 	pkexec /usr/bin/id
 	}
 
-# Function: trap_end_signal
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 trap_end_signal(){
 	trap "" SIGINT SIGTERM
 }
 
 
-# Function: wallpaper_effect_on
 # Description: modifies the timer, period and enables cycling between the wallpaper images
-# Arguments:
-# Wrote by: Helvecio
 wallpaper_effect_on() {
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -n -t bool -s true;
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-period -n -t int -s 0;
@@ -28,33 +22,25 @@ wallpaper_effect_on() {
 }
 
 
-# Function: zenity_scattering_error
-# Description: 
-# Wrote by: Helvecio
+# Description: displays a zenity warning dialog with a custom message and a timeout of 15 seconds
 zenity_scattering_error(){
 	zenity --no-cancel --warning --width=260 --height=120 --timeout 15 --text "$1" 
 }
 
 
-# Function: xcowsay_text
 # Description: 1st xcowsay that has 2 text options
-# Wrote by: Helvecio
 xcowsay_text(){
  	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "$1"
 }
 
 
-# Function: perguntar 
-# Description: function for test prompt
-# Wrote by: Helvecio
+# Description: present a zenity entry dialog to the user and returns the input for the quiz
 perguntar(){
 	zenity --no-cancel --entry --height 300 --width 500 --info --title "Teste" --text "$1"
 }
 
 
-# Function: disable_mouse
 # Description: disables the main mouse inputs
-# Wrote by: Helvecio
 disable_mouse(){
 	mouse="$(xinput list --id-only 2)"
 	if [ "${mouse}" = 2 ]; then
@@ -63,10 +49,7 @@ disable_mouse(){
 }
 
 
-# Function: dirNfile_generator
-# Description: makes tons of dir's and files and expands it 
-# Wrote by: Helvecio
-# Arguments:
+# Description: makes tons of directories and files and expands it 
 dirNfile_generator(){
 	# dir generator
 	for i in {1..100}; do mkdir ~/Desktop/ola$i& done
@@ -77,10 +60,7 @@ dirNfile_generator(){
 	for i in {1..40}; do cp ~/Downloads/yes$i.txt ~/Desktop/ola$i/ola$i.txt & done
 }
 
-# Function: trigger_penalty1
 # Description: first penalty if wrong input in 1st question
-# Wrote by: Helvecio
-# Arguments:
 trigger_penalty1(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 3
@@ -98,10 +78,7 @@ trigger_penalty1(){
 }
 
 
-# Function: trigger_penalty2
-# Description: second penalty if input is wrong in 2nd question
-# Arguments:
-# Wrote by: Helvecio
+# Description: second penalty if input is wrong in the 2nd question
 trigger_penalty2 (){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
@@ -120,7 +97,6 @@ trigger_penalty2 (){
 }
 
 
-# Function: complete_challenge
 # Description: Handles the success workflow when both stages are passed and opening it.
 complete_challenge(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
@@ -132,7 +108,6 @@ complete_challenge(){
 }
 
 
-# Function: main
 # Description: Orchestrates the quiz stages and validates user answers.
 main (){ 
 	get_root
