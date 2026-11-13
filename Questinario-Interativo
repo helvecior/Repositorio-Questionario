@@ -29,12 +29,14 @@ zenity_scattering_error(){
 
 
 # Description: 1st xcowsay that has 2 text options
+# Arguments: $1 - The text to be displayed in the xcowsay dialog
 xcowsay_text(){
  	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "$1"
 }
 
 
 # Description: present a zenity entry dialog to the user and returns the input for the quiz
+# Arguments: $1 - The question text
 perguntar(){
 	zenity --no-cancel --entry --height 300 --width 500 --info --title "Teste" --text "$1"
 }
