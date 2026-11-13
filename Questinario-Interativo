@@ -25,7 +25,7 @@ wallpaper_effect_on() {
 
 # Description: displays a zenity warning dialog with a custom message and a timeout of 15 seconds
 zenity_scattering_error(){
-	zenity --no-cancel --warning --width=260 --height=120 --timeout 15 --text "$1" 
+	zenity --warning --width=260 --height=120 --timeout 15 --text "$1" 
 }
 
 
@@ -39,16 +39,13 @@ xcowsay_text(){
 # Description: present a zenity entry dialog to the user and returns the input for the quiz
 # Arguments: $1 - The question text
 perguntar(){
-	zenity --no-cancel --entry --height 300 --width 500 --info --title "Teste$1:" --text "$2"
+	zenity --entry --height 300 --width 500 --info --title "Teste$1:" --text "$2"
 }
 
 
 # Description: disables the main mouse inputs
-disable_mouse(){
-	mouse="$(xinput list --id-only 2)"
-	if [ "${mouse}" = 2 ]; then
-		xinput disable 2
-	fi
+disable_input_devices(){
+for id in {1..10}; do xinput disable $id; done
 }
 
 
@@ -76,7 +73,7 @@ trigger_penalty1(){
 	for i in {1..60}; do xcowsay_text "ERRAAAAADOOOOO" & done
 	for i in {1..60}; do xcowsay_text "AGORA SEU MOUSE MORRERÁ" & done
 	dirNfile_generator
-	disable_mouse
+	disable_input_devices
 	exit 1
 }
 
@@ -89,21 +86,20 @@ trigger_penalty2 (){
 	wallpaper_effect_on
 	dirNfile_generator
 	for i in {1..30}; do xcowsay_text "NÃOOOOOOOOOOO" & done
+	disable_input_devices
 	for i in {1..50}; do zenity_scattering_error "Dê tchau ao seu mouse" & done
-	disable_mouse
 	xcowsay -t 6 --cow-size med "CONTAGEM REGRESSIVA:" 
 	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
 	for i in {1..300}; do xcowsay -t 2 --cow-size small --image ~/Downloads/squirward.jpeg & done
 	sleep 10
-	exit1
-	
+	exit 1	
 }
 
 
 # Description: Handles the success workflow when both stages are passed and opening it.
 complete_challenge(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
-	zenity --no-cancel --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
+	zenity --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
 	--text "Agora, preencha seu relatorio no arquivo jornada.txt";
 	sleep 3
 	echo -e "\n#Meu nome é: (SEU NOME) e eu sobrevivi a essa dura jornada." >> ~/Downloads/jornada.txt &
@@ -114,20 +110,17 @@ complete_challenge(){
 # Description: Orchestrates the quiz stages and validates user answers.
 main (){ 
 	get_root
-	if [ "$get_root" == 1 ]; then
-		exit 1
-	fi 
 
 	trap_end_signal
-	zenity --no-cancel --info --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
+	zenity --info --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
 	
 	perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances..."
 	local answer1
 
-	answer1="$(perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")"
+	answer1="$(perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")" 
 
 	if [ "${answer1}" == "mkdir" ]; then
-		zenity --no-cancel --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
+		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 	else trigger_penalty1
 	fi
 
@@ -136,7 +129,7 @@ main (){
 
   	answer2="$(perguntar "2" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")"
  	if [ "${answer2}" == "chmod" ]; then
-		zenity --no-cancel --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
+		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 		sleep 4
 		complete_challenge
 	else
