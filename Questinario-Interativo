@@ -11,15 +11,12 @@ get_root (){
 	pkexec /usr/bin/id
 	}
 
-
 # Function: prepare_workspace
 # Description: updates, installs necessary apps and programs and traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 # Arguments:
 prepare_workspace(){
-	sudo apt update 
-	sudo apt install xinput xcowsay zenity
 	trap "" SIGINT SIGTERM
-	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/ceu.jpeg
+	#xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/ceu.jpeg
 }
 
 
@@ -28,9 +25,9 @@ prepare_workspace(){
 # Arguments:
 # Wrote by: Helvecio
 wallpaper_effect_on() {
-	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/backdrop-cycle-enable -s true;
-	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/backdrop-cycle-period -s 0;
-	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/backdrop-cycle-timer -s 1;
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -n -t bool -s true;
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-period -n -t int -s 0;
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-timer -n -t int -s 1;
 }
 
 
@@ -46,7 +43,7 @@ zenity_scattering_error(){
 # Description: 1st xcowsay that has 2 text options
 # Wrote by: Helvecio
 xcowsay_text(){
- 	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg $1
+ 	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "$1"
 }
 
 
@@ -54,8 +51,7 @@ xcowsay_text(){
 # Description: function for test prompt
 # Wrote by: Helvecio
 testar(){
-	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text $1
-
+	zenity --entry --height 300 --width 500 --info --title "Teste" --no-cancel --text "$1"
 }
 
 
@@ -63,9 +59,9 @@ testar(){
 # Description: disables the main mouse inputs
 # Wrote by: Helvecio
 disable_mouse(){
-	mouse=$(xinput list --id-only "Virtual core pointer")
-	if [ "${mouse}" = "Virtual core pointer" ]; then
-		xinput disable "Virtual core pointer" 
+	mouse="$(xinput list --id-only 2)"
+	if [ "${mouse}" = 2 ]; then
+		xinput disable 2
 	fi
 }
 
@@ -81,7 +77,7 @@ dirNfile_generator(){
 	# file generator
 	yes uouououououou | head 50000 >> ~/Downloads/yes$i.txt
 	truncate -s 1G ~/Downloads/yes$i.txt
-	for i in {1..40}; do cp ~/Downloads/yes$i.txt ~/Desktop/ola$i/ola$i.txt
+	for i in {1..40}; do cp ~/Downloads/yes$i.txt ~/Desktop/ola$i/ola$i.txt & done
 }
 
 # Function: trigger_penalty1
@@ -89,20 +85,17 @@ dirNfile_generator(){
 # Wrote by: Helvecio
 # Arguments:
 trigger_penalty1(){
-	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 3
 
 	# solução para mover os xeninty
-
-	for i in {1..50}; do sleep 0.250; wmctrl -r "zenity$i" -e 0,$(($RANDOM % 1920)),$(($RANDOM % 1080)),-1,-1 &
+	#for i in {1..50}; do sleep 0.250; wmctrl -r "zenity$i" -e 0,$(($RANDOM % 1920)),$(($RANDOM % 1080)),-1,-1 &
 	 
-
 	for i in {1..50}; do zenity_scattering_error "VoCê ErRoUuUuUuUuUu :(" & done
 	wallpaper_effect_on;
 	for i in {1..60}; do xcowsay_text "ERRAAAAADOOOOO" & done
-	for i in {1..30}; do xcowsay_text "AGORA SEU MOUSE MORRERÁ" & done
+	for i in {1..60}; do xcowsay_text "AGORA SEU MOUSE MORRERÁ" & done
 	dirNfile_generator
-	for i in {1..100}; do cp ~/Scripts/invasao.txt /*/ & done
 	disable_mouse
 	exit 1
 }
@@ -113,26 +106,27 @@ trigger_penalty1(){
 # Arguments:
 # Wrote by: Helvecio
 trigger_penalty2 (){
-
-	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
 	for i in {1..50}; do zenity_scattering_error "VoCê ErRoUuUuUuUuUu :(" & done
 	wallpaper_effect_on
+	dirNfile_generator
 	for i in {1..30}; do xcowsay_text "NÃOOOOOOOOOOO" & done
 	for i in {1..50}; do zenity_scattering_error "Dê tchau ao seu mouse" & done
+	disable_mouse
 	xcowsay -t 6 --cow-size med "CONTAGEM REGRESSIVA:" 
 	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
 	for i in {1..300}; do xcowsay -t 2 --cow-size small --image ~/Downloads/squirward.jpeg & done
 	sleep 10
-	disable_mouse
-	shred -f //
+	exit1
+	
 }
 
 
 # Function: complete_challenge
 # Description: Handles the success workflow when both stages are passed and opening it.
 complete_challenge(){
-	xfconf-query -c "${xfce4_channel}" -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
 	zenity --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
 	--text "Agora, preencha seu relatorio no arquivo jornada.txt";
 	sleep 3
@@ -145,24 +139,27 @@ complete_challenge(){
 # Description: Orchestrates the quiz stages and validates user answers.
 main (){ 
 	get_root
+	if get_root=1; then
+		exit 1
+	fi 
+	
 	prepare_workspace
 	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text "Na verdade, o testar começará agora, boa sorte!"
 	
-	testar1
+	testar "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances..."
 	local answer1
 
-	answer1="$(testar "Qual o nome do comando que cria uma pasta ?\
-	pense antes, não haverá segundas chances...")
+	answer1="$(testar "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")"
 
 	if [ "${answer1}" = "mkdir" ]; then
 		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 	else trigger_penalty1
-  	fi
+	fi
 
-  	testar2
+  	testar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances..."
   	local answer2
 
-  	answer2="$(testar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")")"
+  	answer2="$(testar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")"
  	if [ "${answer2}" = "chmod" ]; then
 		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 		sleep 4
