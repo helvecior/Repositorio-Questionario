@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # XFCE property path for wallpaper_effect
-readonly xfce4_channel="xfce4-desktop"
 readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
 # Function: get_root
@@ -11,12 +10,10 @@ get_root (){
 	pkexec /usr/bin/id
 	}
 
-# Function: prepare_workspace
-# Description: updates, installs necessary apps and programs and traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
-# Arguments:
-prepare_workspace(){
+# Function: trap_end_signal
+# Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
+trap_end_signal(){
 	trap "" SIGINT SIGTERM
-	#xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/ceu.jpeg
 }
 
 
@@ -35,7 +32,7 @@ wallpaper_effect_on() {
 # Description: 
 # Wrote by: Helvecio
 zenity_scattering_error(){
-	zenity --warning --text $1 --width=260 --height=120 --timeout 15 
+	zenity --no-cancel --warning --width=260 --height=120 --timeout 15 --text "$1" 
 }
 
 
@@ -47,11 +44,11 @@ xcowsay_text(){
 }
 
 
-# Function: testar 
+# Function: perguntar 
 # Description: function for test prompt
 # Wrote by: Helvecio
-testar(){
-	zenity --entry --height 300 --width 500 --info --title "Teste" --no-cancel --text "$1"
+perguntar(){
+	zenity --no-cancel --entry --height 300 --width 500 --info --title "Teste" --text "$1"
 }
 
 
@@ -127,7 +124,7 @@ trigger_penalty2 (){
 # Description: Handles the success workflow when both stages are passed and opening it.
 complete_challenge(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
-	zenity --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
+	zenity --no-cancel --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
 	--text "Agora, preencha seu relatorio no arquivo jornada.txt";
 	sleep 3
 	echo -e "\n#Meu nome é: (SEU NOME) e eu sobrevivi a essa dura jornada." >> ~/Downloads/jornada.txt &
@@ -139,29 +136,29 @@ complete_challenge(){
 # Description: Orchestrates the quiz stages and validates user answers.
 main (){ 
 	get_root
-	if get_root=1; then
+	if [ "$get_root" == 1 ]; then
 		exit 1
 	fi 
+
+	trap_end_signal
+	zenity --no-cancel --info --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
 	
-	prepare_workspace
-	zenity --height 300 --width 500 --info --title "Aviso" --no-cancel --text "Na verdade, o testar começará agora, boa sorte!"
-	
-	testar "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances..."
+	perguntar "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances..."
 	local answer1
 
-	answer1="$(testar "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")"
+	answer1="$(perguntar "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")"
 
-	if [ "${answer1}" = "mkdir" ]; then
-		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
+	if [ "${answer1}" == "mkdir" ]; then
+		zenity --no-cancel --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 	else trigger_penalty1
 	fi
 
-  	testar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances..."
+  	perguntar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances..."
   	local answer2
 
-  	answer2="$(testar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")"
- 	if [ "${answer2}" = "chmod" ]; then
-		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
+  	answer2="$(perguntar "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")"
+ 	if [ "${answer2}" == "chmod" ]; then
+		zenity --no-cancel --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 		sleep 4
 		complete_challenge
 	else
