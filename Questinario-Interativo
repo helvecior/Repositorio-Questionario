@@ -8,6 +8,7 @@ get_root (){
 	pkexec /usr/bin/id
 	}
 
+
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 trap_end_signal(){
 	trap "" SIGINT SIGTERM
