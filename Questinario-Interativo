@@ -3,11 +3,6 @@
 # XFCE property path for wallpaper_effect
 readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
-# Description: requests acess to root permission in order to run the .sh file
-get_root (){
-	pkexec /usr/bin/id
-	}
-
 
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 trap_end_signal(){
@@ -23,23 +18,18 @@ wallpaper_effect_on() {
 }
 
 
-# Description: displays a zenity warning dialog with a custom message and a timeout of 15 seconds
-zenity_scattering_error(){
-	zenity --warning --width=260 --height=120 --timeout 15 --text "$1" 
-}
-
-
-# Description: 
-# Arguments: $1 - The text to be displayed in the xcowsay dialog
-xcowsay_text(){
- 	xcowsay -t 7 --cow-size med --font "MathJax-Caligraphic 23" --image ~/Downloads/ghost.jpeg "$1"
+# Description: this function displays a xcowsay with variable cow size, image and an specified text message.
+# Also presents a custom font for the message.
+# Arguments: $1 - The cow size (small, med, large), $2 - The image path, $3 - The message to display
+xcowsay_size_image_dialog(){
+	xcowsay -t 7 --font "MathJax-Caligraphic 23" --cow-size "$1" --image "$2" "$3"
 }
 
 
 # Description: present a zenity entry dialog to the user and returns the input for the quiz
-# Arguments: $1 - The question text
+# Arguments: $1 - The question number, $2 - The question text
 perguntar(){
-	zenity --entry --height 300 --width 500 --info --title "Teste$1:" --text "$2"
+	zenity --entry --height 300 --width 500 --title "Teste $1:" --text "$2"
 }
 
 
@@ -56,7 +46,7 @@ dirNfile_generator(){
 
 	# file generator
 	yes uouououououou | head 50000 >> ~/Downloads/yes"$i".txt
-	truncate -s 1G ~/Downloads/yes"$i".txt
+	truncate -s 1G ~/Downloads/*yes"$i".txt
 	for i in {1..40}; do cp ~/Downloads/yes"$i".txt ~/Desktop/ola"$i"/ola"$i".txt & done
 }
 
@@ -67,12 +57,14 @@ trigger_penalty1(){
 
 	# solução para mover os zenity
 	#for i in {1..50}; do sleep 0.250; wmctrl -r "zenity$i" -e 0,$(($RANDOM % 1920)),$(($RANDOM % 1080)),-1,-1 &
+	#SUBSTITUIR O ZENITY PELO XCOWSAY PARA ESPALHAR O ERRO NA TELA 
 
-	for i in {1..50}; do zenity_scattering_error "VoCê ErRoUuUuUuUuUu :(" & done
-	wallpaper_effect_on;
-	for i in {1..60}; do xcowsay_text "ERRAAAAADOOOOO" & done
-	for i in {1..60}; do xcowsay_text "AGORA SEU MOUSE MORRERÁ" & done
+	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/squirward.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
+
+	wallpaper_effect_on
 	dirNfile_generator
+	for i in {1..60}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO" & done
+	for i in {1..60}; do xcowsay_size_image_dialog med ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
 	disable_input_devices
 	exit 1
 }
@@ -82,12 +74,17 @@ trigger_penalty1(){
 trigger_penalty2 (){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
-	for i in {1..50}; do zenity_scattering_error "VoCê ErRoUuUuUuUuUu :(" & done
+
+	#SUBSTITUIR O ZENITY PELO XCOWSAY PARA ESPALHAR O ERRO NA TELA 
+	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
+	
 	wallpaper_effect_on
 	dirNfile_generator
-	for i in {1..30}; do xcowsay_text "NÃOOOOOOOOOOO" & done
+	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
 	disable_input_devices
-	for i in {1..50}; do zenity_scattering_error "Dê tchau ao seu mouse" & done
+
+	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "Dê tchau ao seu mouse" & done
+
 	xcowsay -t 6 --cow-size med "CONTAGEM REGRESSIVA:" 
 	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
 	for i in {1..300}; do xcowsay -t 2 --cow-size small --image ~/Downloads/squirward.jpeg & done
@@ -102,33 +99,32 @@ complete_challenge(){
 	zenity --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
 	--text "Agora, preencha seu relatorio no arquivo jornada.txt";
 	sleep 3
-	echo -e "\n#Meu nome é: (SEU NOME) e eu sobrevivi a essa dura jornada." >> ~/Downloads/jornada.txt &
+	echo -e "\n#Meu nome é: (SEU NOME) e eu sobrevivi a essa dura jornada." >> ~/Downloads/jornada.txt 
 	xed ~/Downloads/jornada.txt 
 }
 
 
 # Description: Orchestrates the quiz stages and validates user answers.
 main (){ 
-	get_root
-
-	trap_end_signal
-	zenity --info --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
 	
-	perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances..."
+
+	#trap_end_signal
+	zenity --warning --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
+	
 	local answer1
 
 	answer1="$(perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")" 
 
-	if [ "${answer1}" == "mkdir" ]; then
+	if [ "${answer1}" = "mkdir" ]; then
 		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 	else trigger_penalty1
 	fi
 
-  	perguntar "2" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances..."
   	local answer2
 
-  	answer2="$(perguntar "2" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ? pense antes, não haverá segundas chances...")"
- 	if [ "${answer2}" == "chmod" ]; then
+  	answer2="$(perguntar "2" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ?\
+	pense antes, não haverá segundas chances...")"
+ 	if [ "${answer2}" = "chmod" ]; then
 		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
 		sleep 4
 		complete_challenge
