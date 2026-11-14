@@ -65,7 +65,7 @@ trigger_penalty1(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 3
 
-	# solução para mover os xeninty
+	# solução para mover os zenity
 	#for i in {1..50}; do sleep 0.250; wmctrl -r "zenity$i" -e 0,$(($RANDOM % 1920)),$(($RANDOM % 1080)),-1,-1 &
 	 
 	for i in {1..50}; do zenity_scattering_error "VoCê ErRoUuUuUuUuUu :(" & done
