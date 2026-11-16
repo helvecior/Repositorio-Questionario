@@ -35,19 +35,38 @@ perguntar(){
 
 # Description: disables the main mouse inputs
 disable_input_devices(){
-for id in {1..10}; do xinput disable "$id"; done
+	xinput list | grep -E "slave +pointer" | grep -o 'id=[0-9]*' | cut -d= -f2 |
+
+	while read -r id; 
+	do xinput disable "$id"
+	done
 }
 
 
 # Description: makes tons of directories and files and expands it 
-dirNfile_generator(){
-	# dir generator
-	for i in {1..490}; do mkdir ~/Desktop/ola"$i"& done
+dir_generator(){
+	for i in {1..490}; do 
+		mkdir ~/Desktop/ola"$i"& 
+	done
+}
 
-	# file generator
-	yes uouououououou | head 50000 >> ~/Downloads/yes"$i".txt
-	truncate -s 1G ~/Downloads/*yes"$i".txt
-	for i in {1..40}; do cp ~/Downloads/yes"$i".txt ~/Desktop/ola"$i"/ola"$i".txt & done
+
+# Description: 
+# Used in the trigger_penalty2 to generate files and open them, causing a system overload.
+file_generator(){
+	for i in {1..400}; do 
+	fortune > ~/Desktop/"${A..Z}""$i".txt &
+	done
+	wait
+	xed ~/Desktop/*
+}
+
+# Description: generates a report file on the desktop with a congratulatory message and a request for feedback.
+report_generator(){
+	echo -e "\Meu nome é (Seu Nome) e eu sobrevivi a essa dura jornada.\n" > ~/Desktop/jornada.txt 
+	cowsay -f tux "O Sr. Linus Torvalds o/a congratula pelo seu desempenho!" >> ~/Desktop/jornada.txt
+	echo -e "\nSe você tiver alguma sugestão para melhorar o desafio,\
+	por favor, escreva abaixo, qualquer ideia será bem-vinda." >> ~/Desktop/jornada.txt	
 }
 
 # Description: first penalty if wrong input in 1st question
@@ -59,12 +78,12 @@ trigger_penalty1(){
 	#for i in {1..50}; do sleep 0.250; wmctrl -r "zenity$i" -e 0,$(($RANDOM % 1920)),$(($RANDOM % 1080)),-1,-1 &
 	#SUBSTITUIR O ZENITY PELO XCOWSAY PARA ESPALHAR O ERRO NA TELA 
 
-	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/squirward.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
-
+	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
 	wallpaper_effect_on
-	dirNfile_generator
-	for i in {1..60}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO" & done
-	for i in {1..60}; do xcowsay_size_image_dialog med ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
+	dir_generator
+
+	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO" & done &&
+	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
 	disable_input_devices
 	exit 1
 }
@@ -79,7 +98,10 @@ trigger_penalty2 (){
 	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
 	
 	wallpaper_effect_on
-	dirNfile_generator
+	dir_generator
+	file_generator
+
+
 	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
 	disable_input_devices
 
@@ -97,22 +119,22 @@ trigger_penalty2 (){
 complete_challenge(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
 	zenity --info --height 300 --width 500 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
-	--text "Agora, preencha seu relatorio no arquivo jornada.txt";
-	sleep 3
-	echo -e "\n#Meu nome é: (SEU NOME) e eu sobrevivi a essa dura jornada." >> ~/Downloads/jornada.txt 
-	xed ~/Downloads/jornada.txt 
+	--text "Agora, preencha seu relatório no arquivo jornada.txt";
+
+	report_generator
+	
+	xed ~/Desktop/jornada.txt 
+	zenity --info --height 300 --width 500 --title "Script criado por Helvecio Resende Chaves"\
+	--text "Obrigado por participar do meu desafio, espero que tenha se divertido!"
 }
 
 
 # Description: Orchestrates the quiz stages and validates user answers.
 main (){ 
-	
-
-	#trap_end_signal
+	trap_end_signal
 	zenity --warning --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
 	
 	local answer1
-
 	answer1="$(perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")" 
 
 	if [ "${answer1}" = "mkdir" ]; then
@@ -121,12 +143,12 @@ main (){
 	fi
 
   	local answer2
-
   	answer2="$(perguntar "2" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ?\
 	pense antes, não haverá segundas chances...")"
- 	if [ "${answer2}" = "chmod" ]; then
+ 	
+	if [ "${answer2}" = "chmod" ]; then
 		zenity --info --height 300 --width 500 --title "Correto" --text "Parabéns, resposta correta!!"
-		sleep 4
+		sleep 1
 		complete_challenge
 	else
 		trigger_penalty2
