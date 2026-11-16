@@ -26,6 +26,18 @@ xcowsay_size_image_dialog(){
 }
 
 
+# Description: this function displays a xcowsay with variable cow size and an specified text message.
+zenity_scatter_dialog(){
+	
+	for i in {1..50}; do
+	x=$((RANDOM % 1366))
+	y=$((RANDOM % 720))
+	zenity --height 300 --width 500 --text "Erro: $1" &
+	wmctrl -r :ACTIVE: -b remove maximized_vert,maximized_horz
+	wmctrl -r :ACTIVE: "Erro: $1" -e 0,$x,$y, 1,-1 &
+	done
+}
+
 # Description: present a zenity entry dialog to the user and returns the input for the quiz
 # Arguments: $1 - The question number, $2 - The question text
 perguntar(){
@@ -61,7 +73,7 @@ file_generator(){
 	done
 	wait
 
-# Description: opens tons of files in xed and moves them around the screen. 
+	# Description: opens tons of files in xed and moves them around the screen. 
 
 	for i in {1..200}; do 
 		x=$((RANDOM % 1366))
@@ -93,7 +105,7 @@ trigger_penalty1(){
 
 	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
 	wallpaper_effect_on
-	dir_generator
+	file_generator
 
 	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO" & done &&
 	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
@@ -111,7 +123,6 @@ trigger_penalty2 (){
 	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
 	
 	wallpaper_effect_on
-	dir_generator
 	file_generator
 
 
