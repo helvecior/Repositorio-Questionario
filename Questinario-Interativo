@@ -142,7 +142,7 @@ trigger_penalty1(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 3
 	
-	for i in {1..50}; do
+	for i in {1..100}; do
 		zenity --notification --text "Prepare-se..." 
 	done
 	wait
