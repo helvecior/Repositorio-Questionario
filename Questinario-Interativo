@@ -32,11 +32,25 @@ zenity_scatter_dialog(){
 	for i in {1..50}; do
 	x=$((RANDOM % 1366))
 	y=$((RANDOM % 720))
-	zenity --height 300 --width 500 --text "Erro: $1" &
-	wmctrl -r :ACTIVE: -b remove maximized_vert,maximized_horz
-	wmctrl -r :ACTIVE: "Erro: $1" -e 0,$x,$y, 1,-1 &
+	zenity --warning --height 25 --width 75 --text "ERROUUUUUUU: $1" &
+	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
+	wmctrl -r :ACTIVE: "Erro: $1" -e 0,$x,$y,1,-1 &
 	done
 }
+
+
+# Description: this function opens a jpeg imagem on a small window and moves it around the screen, creating a chaotic effect.
+image_scatter(){
+	
+	for i in {1..26}; do
+	x=$((RANDOM % 1366))
+	y=$((RANDOM % 720))
+	open ~/Downloads/*.jpg
+	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
+	wmctrl -r :ACTIVE: "Erro: $1" -e 0,$x,$y,80,80 
+	done
+}
+
 
 # Description: present a zenity entry dialog to the user and returns the input for the quiz
 # Arguments: $1 - The question number, $2 - The question text
