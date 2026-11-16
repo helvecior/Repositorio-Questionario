@@ -175,6 +175,7 @@ trigger_penalty2 (){
 	
 	wallpaper_effect_on
 	file_generator_effect
+	icon_desktop_size_effect
 
 	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
 
