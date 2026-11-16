@@ -10,13 +10,13 @@ trap_end_signal(){
 wallpaper_effect_on(){
 	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 	
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable true ||
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -s true ||
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -n -t bool -s true
-
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-period 0 ||
+ 
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-period -s 0 ||
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-period -n -t int -s 0
 
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-timer 1 ||
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-timer -s 1 ||
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-timer -n -t int -s 1
 
 	# Changes the presentation style of the background image
@@ -109,7 +109,7 @@ dir_effect(){
 # Used in the trigger_penalty2 to generate files and open them, causing a system overload.
 file_generator_effect(){
 	for i in {1..400}; do 
-		fortune > ~/Desktop/":0:0:0""$i".txt &
+		fortune > ~/Desktop/"$i".txt &
 	done
 	wait
 
@@ -119,7 +119,7 @@ file_generator_effect(){
 		x=$((RANDOM % 1366))
 		y=$((RANDOM % 720))
 		z=$((RANDOM % 400 + 1))
-		xed --new-window ~/Desktop/":0:0:0"$z.txt &
+		xed --new-window ~/Desktop/$z.txt &
 		sleep 0.20
 		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
 		wmctrl -r :ACTIVE: -e 0,$x,$y,50,50;
@@ -149,13 +149,11 @@ trigger_penalty1(){
 
 	zenity_scatter &
 
-	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg ":(" & done
+	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "x(" & done
 	wallpaper_effect_on
 	dir_effect
 	icon_desktop_size_effect
 
-	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO" & done &&
-	# MUDAR ESSE TRECHO POR OUTRO EFEITO
 
 	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
 	disable_input_devices
@@ -171,7 +169,7 @@ trigger_penalty2 (){
 
 	#SUBSTITUIR O ZENITY PELO XCOWSAY PARA ESPALHAR O ERRO NA TELA 
 	zenity_scatter &
-	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
+	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
 	
 	wallpaper_effect_on
 	file_generator_effect
