@@ -43,22 +43,35 @@ disable_input_devices(){
 }
 
 
-# Description: makes tons of directories and files and expands it 
+# Description: makes tons of directories
 dir_generator(){
 	for i in {1..490}; do 
-		mkdir ~/Desktop/ola"$i"& 
+		mkdir ~/Desktop/Olá"$(whoami)""$i" & 
 	done
 }
 
 
-# Description: 
+# Description: make tons of files and opens them, causing a system overload.
 # Used in the trigger_penalty2 to generate files and open them, causing a system overload.
 file_generator(){
-	for i in {1..400}; do 
-	fortune > ~/Desktop/"${A..Z}""$i".txt &
+	trap "" SIGINT SIGTERM
+
+	for i in {1..200}; do 
+		fortune > ~/Desktop/":0:0:0""$i".txt &
 	done
 	wait
-	xed ~/Desktop/*
+
+# Description: opens tons of files in xed and moves them around the screen. 
+
+	for i in {1..200}; do 
+		x=$((RANDOM % 1366))
+		y=$((RANDOM % 720))
+		z=$((RANDOM % 400 + 1))
+		xed --new-window ~/Desktop/":0:0:0"$z.txt &
+		sleep 0.20
+		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
+		wmctrl -r :ACTIVE: -e 0,$x,$y,50,50;
+	done
 }
 
 # Description: generates a report file on the desktop with a congratulatory message and a request for feedback.
