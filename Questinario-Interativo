@@ -146,7 +146,7 @@ trigger_penalty1(){
 		zenity --notification --text "Prepare-se..." 
 	done
 	wait
- 	
+
 	zenity_scatter &
 
 	for i in {1..50}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg ":(" & done
@@ -154,7 +154,7 @@ trigger_penalty1(){
 	dir_effect
 	icon_desktop_size_effect
 
-	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO" & done 
+	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "ERRAAAAADOOOOO" & done &&
 	# MUDAR ESSE TRECHO POR OUTRO EFEITO
 
 	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
