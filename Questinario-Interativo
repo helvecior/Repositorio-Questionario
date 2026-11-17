@@ -125,10 +125,10 @@ file_generator_effect(){
 
 # Description: changes the desktop image to a check symbol for 1.5 seconds then returns to the original desktop image 
 right_answer_effect(){
-
 	# Store original states of the proprierties
-	original_image="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image")" 
-	original_style="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style")"
+	original_image="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image)" 
+
+	original_style="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style)"
 
  	# Apply the temporary wallpaper
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
@@ -144,11 +144,10 @@ right_answer_effect(){
 
 # Description: generates a report file on the desktop with a congratulatory message and a request for feedback, then opens it in xed for the user to edit.
 report_generator(){
-	echo -e "Meu nome é (Seu Nome) e eu sobrevivi a essa dura jornada.\n" > ~/Desktop/jornada.txt 
+	echo -e "Meu nome é (Seu Nome) e eu sobrevivi a essa dura jornada.\n" > ~/Desktop/jornada.txt
 	cowsay -f tux "O Sr. Linus Torvalds o/a congratula pelo seu desempenho!" >> ~/Desktop/jornada.txt
-	echo -e "\nSe você tiver alguma sugestão para melhorar o desafio,\
-	por favor, escreva abaixo, qualquer ideia será bem-vinda." >> ~/Desktop/jornada.txt	&
-	xed ~/Desktop/jornada.txt 
+	echo -e "\nSe você tiver alguma sugestão para melhorar o desafio, por favor, escreva abaixo, qualquer ideia será bem-vinda." >> ~/Desktop/jornada.txt
+	xed ~/Desktop/jornada.txt
 }
 
 
@@ -178,7 +177,7 @@ trigger_penalty1(){
 
 
 # Description: second penalty if input is wrong in the 2nd question
-trigger_penalty2 (){
+trigger_penalty2(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
 
@@ -224,6 +223,7 @@ complete_challenge(){
 
 # Description: Orchestrates the quiz stages and validates user answers.
 main(){ 
+	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/ceu.jpeg
 
 	trap_end_signal
