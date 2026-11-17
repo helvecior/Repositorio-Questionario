@@ -125,14 +125,18 @@ file_generator_effect(){
 
 # Description: changes the desktop image to a check symbol for 1.5 seconds then returns to the original desktop image 
 right_answer_effect(){
+
+	# Store original states of the proprierties
 	original_image="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image")" 
 	original_style="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style")"
 
+ 	# Apply the temporary wallpaper
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/correto.jpeg &
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "$HOME/Downloads/correto.jpeg" &
 	
 	sleep 1.5
 
+	# Restore the original settings
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${original_style}" &
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "${original_image}" &
 }
