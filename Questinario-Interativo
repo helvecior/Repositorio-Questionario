@@ -106,18 +106,19 @@ dir_effect(){
 # Used in the trigger_penalty2 to generate files and open them, causing a system overload.
 file_generator_effect(){
 	for i in {1..400}; do 
-		fortune > ~/Desktop/"$(shuf -n1 /usr/share/dict/words)".txt &
+		fortune > ~/Desktop/$i.txt &
 	done
 	wait
 
 	# Description: opens tons of files in xed and moves them around the screen. 
 
-	for i in {1..200}; do 
+	for i in {1..150}; do 
 		x=$((RANDOM % 1366))
 		y=$((RANDOM % 720))
 		z=$((RANDOM % 400 + 1))
 		xed --new-window ~/Desktop/$z.txt &
-		sleep 0.20
+		yes ":( :( :( :( :( :( :( :( :( :( :( :(" | head -n 100 >> ~/Desktop*.txt 
+		sleep 0.125
 		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
 		wmctrl -r :ACTIVE: -e 0,$x,$y,50,50;
 	done
@@ -184,10 +185,10 @@ trigger_penalty2(){
 	file_generator_effect
 	icon_desktop_size_effect
 
+	wallpaper_effect_on
 	zenity_scatter "NÃOOOOOO" &
 	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
 	
-	wallpaper_effect_on
 
 	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
 
