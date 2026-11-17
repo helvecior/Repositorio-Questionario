@@ -20,29 +20,25 @@ wallpaper_effect_on(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-timer -n -t int -s 1
 
 	# Changes the presentation style of the background image
-	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -n -t int -s 5
-
+		
 	while true; do
 	local custom_value=$((RANDOM % 6))
 		xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${custom_value}";
-		sleep 0.05
-	done 
+		sleep 4
+	done &
 }
 
 
 # Description: creates new property if it doesn't exist; modifies the desktop icon size constantly 
 icon_desktop_size_effect(){
-	
-	# código para alterar o tamanho dos ícones da área de trabalho, criando a propriedade se não existir.
-
 	xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -n -t int -s 48;
 
 	while true; do
 		local size=$((RANDOM % 100 + 1))
 
 		xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -s "${size}";
-		sleep 0.05
+		sleep 0.20
 	done &
 }
 
@@ -50,17 +46,18 @@ icon_desktop_size_effect(){
 # Also presents a custom font for the message.
 # Arguments: $1 - The cow size (small, med, large), $2 - The image path, $3 - The message to display
 xcowsay_size_image_dialog(){
-	xcowsay -t 7 --font "MathJax-Caligraphic 23" --cow-size "$1" --image "$2" "$3"
+	xcowsay -t 5 --font "MathJax-Caligraphic 23" --cow-size "$1" --image "$2" "$3"
 }
 
 
 # Description: this function displays a zenity warning dialog with a specified message and moves it around the screen, creating a chaotic effect.
+# Arguments: $1= text shown in the warning
 zenity_scatter(){
 	
 	for i in {1..75}; do
 	x=$((RANDOM % 1366))
 	y=$((RANDOM % 720))
-	zenity --warning --height 25 --width 75 --text "NÃOOOOO" &
+	zenity --warning --height 25 --width 75 --text "$1" &
 	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
 	wmctrl -r :ACTIVE: -e 0,$x,$y,-1,-1 &
 	done
@@ -70,7 +67,7 @@ zenity_scatter(){
 # Description: this function opens a jpeg imagem on a small window and moves it around the screen, creating a chaotic effect.
 image_scatter(){
 	
-	for i in {1..80}; do
+	for i in {1..100}; do
 	x=$((RANDOM % 1366))
 	y=$((RANDOM % 720))
 	open ~/Downloads/*.jpg
@@ -109,7 +106,7 @@ dir_effect(){
 # Used in the trigger_penalty2 to generate files and open them, causing a system overload.
 file_generator_effect(){
 	for i in {1..400}; do 
-		fortune > ~/Desktop/"$i".txt &
+		fortune > ~/Desktop/"$(shuf -n1 /usr/share/dict/words)".txt &
 	done
 	wait
 
@@ -124,6 +121,20 @@ file_generator_effect(){
 		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
 		wmctrl -r :ACTIVE: -e 0,$x,$y,50,50;
 	done
+}
+
+# Description: changes the desktop image to a check symbol for 1.5 seconds then returns to the original desktop image 
+right_answer_effect(){
+	original_image="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image")" 
+	original_style="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style")"
+
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/correto.jpeg &
+	
+	sleep 1.5
+
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${original_style}" &
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "${original_image}" &
 }
 
 
@@ -147,12 +158,12 @@ trigger_penalty1(){
 	done
 	wait
 
-	zenity_scatter &
-
-	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "x(" & done
 	wallpaper_effect_on
-	dir_effect
 	icon_desktop_size_effect
+	dir_effect
+	
+	zenity_scatter "NÃOOOOOOO" &
+	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "x(" & done
 
 
 	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
@@ -167,13 +178,13 @@ trigger_penalty2 (){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
 
-	#SUBSTITUIR O ZENITY PELO XCOWSAY PARA ESPALHAR O ERRO NA TELA 
-	zenity_scatter &
+	file_generator_effect
+	icon_desktop_size_effect
+
+	zenity_scatter "NÃOOOOOO" &
 	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
 	
 	wallpaper_effect_on
-	file_generator_effect
-	icon_desktop_size_effect
 
 	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
 
@@ -183,7 +194,7 @@ trigger_penalty2 (){
 	xcowsay -t 6 --cow-size med "CONTAGEM REGRESSIVA:" 
 	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
 	for i in {1..300}; do xcowsay -t 2 --cow-size small --image ~/Downloads/squirward.jpeg & done
-	zenity_scatter &
+	zenity_scatter "NÃOOOOOO" &
 	sleep 10
 	exit 1	
 }
@@ -208,10 +219,14 @@ complete_challenge(){
 
 
 # Description: Orchestrates the quiz stages and validates user answers.
-main (){ 
+main(){ 
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/ceu.jpeg
+
 	trap_end_signal
 	zenity --warning --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
 	
+	# FIRST QUESTION
+
 	local answer1
 	answer1="$(perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")" 
 
@@ -220,13 +235,18 @@ main (){
 	else trigger_penalty1
 	fi
 
+	# SECOND QUESTION
+
   	local answer2
   	answer2="$(perguntar "2" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ?\
 	pense antes, não haverá segundas chances...")"
  	
 	if [ "${answer2}" = "chmod" ]; then
+		
 		zenity --info --height 150 --width 300 --title "Correto" --text "Parabéns, resposta correta!!"
-		sleep 0.5
+		right_answer_effect
+
+		sleep 1
 		complete_challenge
 	else
 		trigger_penalty2
