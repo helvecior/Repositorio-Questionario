@@ -22,11 +22,11 @@ wallpaper_effect_on(){
 	# Changes the presentation style of the background image
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -n -t int -s 5
 		
-	while true; do
-	local custom_value=$((RANDOM % 6))
-		xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${custom_value}";
-		sleep 4
-	done &
+	#while true; do
+	#local custom_value=$((RANDOM % 6))
+	#	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${custom_value}";
+	#	sleep 4
+	#done &
 }
 
 
@@ -66,16 +66,16 @@ zenity_scatter(){
 
 # Description: this function opens a jpeg imagem on a small window and moves it around the screen, creating a chaotic effect.
 image_scatter(){
-	
-	for i in {1..100}; do
+	while true; do
 	x=$((RANDOM % 1366))
 	y=$((RANDOM % 720))
-	open ~/Downloads/*.jpg
+	z=$((RANDOM % 1000 + 1))
+	w=$((RANDOM % 1000 + 1))
+	open ~/Downloads/*
 	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
-	wmctrl -r :ACTIVE: -e 0,$x,$y,80,80 
-	done
+	wmctrl -r :ACTIVE: -e 0,$x,$y,$z,$w 
+	done &
 }
-
 
 # Description: present a zenity entry dialog to the user and returns the input for the quiz
 # Arguments: $1 - The question number, $2 - The question text
@@ -104,12 +104,7 @@ dir_effect(){
 
 # Description: make tons of files and opens them, causing a system overload.
 # Used in the trigger_penalty2 to generate files and open them, causing a system overload.
-file_generator_effect(){
-	for i in {1..400}; do 
-		fortune > ~/Desktop/$i.txt &
-	done
-	wait
-
+file_scattering(){
 	# Description: opens tons of files in xed and moves them around the screen. 
 
 	for i in {1..150}; do 
@@ -117,11 +112,12 @@ file_generator_effect(){
 		y=$((RANDOM % 720))
 		z=$((RANDOM % 400 + 1))
 		xed --new-window ~/Desktop/$z.txt &
-		yes ":( :( :( :( :( :( :( :( :( :( :( :(" | head -n 100 >> ~/Desktop*.txt 
 		sleep 0.125
 		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
 		wmctrl -r :ACTIVE: -e 0,$x,$y,50,50;
-	done
+	done &
+
+	# xdtool key ctrl+a
 }
 
 # Description: changes the desktop image to a check symbol for 1.5 seconds then returns to the original desktop image 
@@ -143,32 +139,22 @@ right_answer_effect(){
 }
 
 
-# Description: generates a report file on the desktop with a congratulatory message and a request for feedback, then opens it in xed for the user to edit.
-report_generator(){
-	echo -e "Meu nome é (Seu Nome) e eu sobrevivi a essa dura jornada.\n" > ~/Desktop/jornada.txt
-	cowsay -f tux "O Sr. Linus Torvalds o/a congratula pelo seu desempenho!" >> ~/Desktop/jornada.txt
-	echo -e "\nSe você tiver alguma sugestão para melhorar o desafio, por favor, escreva abaixo, qualquer ideia será bem-vinda." >> ~/Desktop/jornada.txt
-	xed ~/Desktop/jornada.txt
-}
-
-
 # Description: first penalty if wrong input in 1st question
 trigger_penalty1(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
-	sleep 3
+	sleep 2
 	
 	for i in {1..100}; do
-		zenity --notification --text "Prepare-se..." 
+		zenity --notification --text "Prepare-se..." &
 	done
-	wait
-
+	
 	wallpaper_effect_on
 	icon_desktop_size_effect
 	dir_effect
 	
 	zenity_scatter "NÃOOOOOOO" &
 	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "x(" & done
-
+	wait
 
 	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
 	disable_input_devices
@@ -181,26 +167,40 @@ trigger_penalty1(){
 trigger_penalty2(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
-
-	file_generator_effect
+	
+	for i in {1..400}; do 
+		fortune > ~/Desktop/"$i".txt;  
+	done
+	wait
+	
 	icon_desktop_size_effect
+	file_scattering
 
 	wallpaper_effect_on
 	zenity_scatter "NÃOOOOOO" &
 	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
 	
-
 	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
 
 	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "Dê tchau ao seu mouse" & done
-	disable_input_devices	
 	
-	xcowsay -t 6 --cow-size med "CONTAGEM REGRESSIVA:" 
+	xcowsay -t 6 --cow-size med "CONTAGEM PROGRESSIVA:" 
 	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
-	for i in {1..300}; do xcowsay -t 2 --cow-size small --image ~/Downloads/squirward.jpeg & done
-	zenity_scatter "NÃOOOOOO" &
-	sleep 10
+	for i in {1..300}; do xcowsay -t 10 --cow-size small --image ~/Downloads/squirward.jpeg & done
+	sleep 5
+
+	
+	disable_input_devices
+	image_scatter
 	exit 1	
+}
+
+# Description: generates a report file on the desktop with a congratulatory message and a request for feedback, then opens it in xed for the user to edit.
+report_generator(){
+	echo -e "Meu nome é (Seu Nome) e eu sobrevivi a essa dura jornada.\n" > ~/Desktop/jornada.txt
+	cowsay -f tux "O Sr. Linus Torvalds o/a congratula pelo seu desempenho!" >> ~/Desktop/jornada.txt
+	echo -e "\nSe você tiver alguma sugestão para melhorar o desafio, por favor, escreva abaixo, qualquer ideia será bem-vinda." >> ~/Desktop/jornada.txt
+	xed ~/Desktop/jornada.txt
 }
 
 
@@ -225,9 +225,11 @@ complete_challenge(){
 # Description: Orchestrates the quiz stages and validates user answers.
 main(){ 
 	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
+
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/ceu.jpeg
 
 	trap_end_signal
+
 	zenity --warning --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
 	
 	# FIRST QUESTION
