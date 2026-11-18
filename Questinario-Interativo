@@ -1,10 +1,23 @@
 #!/bin/bash
 
+#region	DETERMINANDO CONSTANTES PARA O SCRIPT
+readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
+
+
+#endregion
+
+
+#region FUNÇÕES DE INICIALIZAÇÃO  
+
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 trap_end_signal(){
 	trap "" SIGINT SIGTERM
 }
 
+#endregion --- end --- 
+
+
+#region	FUNÇÕES DE EFEITOS DE TELA 
 
 # Description: modifies the timer, period and enables cycling between the wallpaper images, creates new properties if they don't exist. 
 wallpaper_effect_on(){
@@ -22,15 +35,47 @@ wallpaper_effect_on(){
 	# Changes the presentation style of the background image
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -n -t int -s 5
 		
-	#while true; do
-	#local custom_value=$((RANDOM % 6))
-	#	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${custom_value}";
-	#	sleep 4
-	#done &
+	while true; do
+	local custom_value=$((RANDOM % 6))
+		xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${custom_value}";
+		sleep 4
+	done &
 }
 
+# Description: make tons of files and opens them, causing a system overload.
+# Used in the trigger_penalty2 to generate files and open them, causing a system overload.
+# shellcheck disable=SC2329
+file_scattering(){
+	# Description: opens tons of files in xed and moves them around the screen. 
+	while i in {1..150}; do 
+		x=$((RANDOM % 1366))
+		y=$((RANDOM % 720))
+		z=$((RANDOM % 400 + 1))
+		xed --new-window ~/Desktop/$z.txt &
+		sleep 0.125
+		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
+		wmctrl -r :ACTIVE: -e 0,"$x","$y",50,50;
+	done &
+
+	# xdtool key ctrl+a
+}
+
+# Description: this function opens a jpeg imagem on a small window and moves it around the screen, creating a chaotic effect.
+image_scatter(){
+	
+	while true; do
+	x=$((RANDOM % 1366))
+	y=$((RANDOM % 720))
+	z=$((RANDOM % 1000 + 1))
+	w=$((RANDOM % 1000 + 1))
+	open ~/Downloads/*
+	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
+	wmctrl -r :ACTIVE: -e 0,$x,$y,$z,$w 
+	done &
+}
 
 # Description: creates new property if it doesn't exist; modifies the desktop icon size constantly 
+# shellcheck disable=SC2329
 icon_desktop_size_effect(){
 	xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -n -t int -s 48;
 
@@ -42,6 +87,28 @@ icon_desktop_size_effect(){
 	done &
 }
 
+# Description: changes the desktop image to a check symbol for 1.5 seconds then returns to the original desktop image 
+right_answer_effect(){
+	# Store original states of the proprierties
+	original_image="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image)" 
+
+	original_style="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style)"
+
+ 	# Apply the temporary wallpaper
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "$HOME/Downloads/parabens.jpeg" &
+	
+	sleep 1.5
+
+	# Restore the original settings
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${original_style}" &
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "${original_image}" &
+}
+
+#endregion --- end --- 
+
+
+#region FUNÇÕES DE DISPLAY
 # Description: this function displays a xcowsay with variable cow size, image and an specified text message.
 # Also presents a custom font for the message.
 # Arguments: $1 - The cow size (small, med, large), $2 - The image path, $3 - The message to display
@@ -64,36 +131,15 @@ zenity_scatter(){
 }
 
 
-# Description: this function opens a jpeg imagem on a small window and moves it around the screen, creating a chaotic effect.
-image_scatter(){
-	while true; do
-	x=$((RANDOM % 1366))
-	y=$((RANDOM % 720))
-	z=$((RANDOM % 1000 + 1))
-	w=$((RANDOM % 1000 + 1))
-	open ~/Downloads/*
-	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
-	wmctrl -r :ACTIVE: -e 0,$x,$y,$z,$w 
-	done &
-}
-
 # Description: present a zenity entry dialog to the user and returns the input for the quiz
 # Arguments: $1 - The question number, $2 - The question text
 perguntar(){
 	zenity --entry --height 300 --width 500 --title "Teste $1:" --text "$2"
 }
+#endregion --- end --- 
 
 
-# Description: disables the main mouse inputs
-disable_input_devices(){
-	xinput list | grep -E "slave +pointer" | grep -o 'id=[0-9]*' | cut -d= -f2 |
-
-	while read -r id; do 
-	xinput disable "$id"
-	done
-}
-
-
+#region FUNÇÕES DE CRIAÇÃO
 # Description: makes tons of directories
 dir_effect(){
 	for i in {1..490}; do 
@@ -101,100 +147,10 @@ dir_effect(){
 	done
 }
 
-
-# Description: make tons of files and opens them, causing a system overload.
-# Used in the trigger_penalty2 to generate files and open them, causing a system overload.
-file_scattering(){
-	# Description: opens tons of files in xed and moves them around the screen. 
-
-	for i in {1..150}; do 
-		x=$((RANDOM % 1366))
-		y=$((RANDOM % 720))
-		z=$((RANDOM % 400 + 1))
-		xed --new-window ~/Desktop/$z.txt &
-		sleep 0.125
-		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
-		wmctrl -r :ACTIVE: -e 0,$x,$y,50,50;
-	done &
-
-	# xdtool key ctrl+a
-}
-
-# Description: changes the desktop image to a check symbol for 1.5 seconds then returns to the original desktop image 
-right_answer_effect(){
-	# Store original states of the proprierties
-	original_image="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image)" 
-
-	original_style="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style)"
-
- 	# Apply the temporary wallpaper
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "$HOME/Downloads/correto.jpeg" &
-	
-	sleep 1.5
-
-	# Restore the original settings
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${original_style}" &
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "${original_image}" &
-}
+#endregion --- end --- 
 
 
-# Description: first penalty if wrong input in 1st question
-trigger_penalty1(){
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
-	sleep 2
-	
-	for i in {1..100}; do
-		zenity --notification --text "Prepare-se..." &
-	done
-	
-	wallpaper_effect_on
-	icon_desktop_size_effect
-	dir_effect
-	
-	zenity_scatter "NÃOOOOOOO" &
-	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "x(" & done
-	wait
-
-	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
-	disable_input_devices
-	image_scatter
-	exit 1
-}
-
-
-# Description: second penalty if input is wrong in the 2nd question
-trigger_penalty2(){
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
-	sleep 5
-	
-	for i in {1..400}; do 
-		fortune > ~/Desktop/"$i".txt;  
-	done
-	wait
-	
-	icon_desktop_size_effect
-	file_scattering
-
-	wallpaper_effect_on
-	zenity_scatter "NÃOOOOOO" &
-	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
-	
-	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
-
-	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "Dê tchau ao seu mouse" & done
-	
-	xcowsay -t 6 --cow-size med "CONTAGEM PROGRESSIVA:" 
-	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
-	for i in {1..300}; do xcowsay -t 10 --cow-size small --image ~/Downloads/squirward.jpeg & done
-	sleep 5
-
-	
-	disable_input_devices
-	image_scatter
-	exit 1	
-}
-
+#region FUNÇÕES DE CONCLUSÃO 
 # Description: generates a report file on the desktop with a congratulatory message and a request for feedback, then opens it in xed for the user to edit.
 report_generator(){
 	echo -e "Meu nome é (Seu Nome) e eu sobrevivi a essa dura jornada.\n" > ~/Desktop/jornada.txt
@@ -220,7 +176,83 @@ complete_challenge(){
 	zenity --info --height 150 --width 300 --title "Script criado por Helvecio Resende Chaves"\
 	--text "Obrigado por participar do meu desafio, espero que tenha se divertido!"
 }
+#endregion --- end --- 
 
+
+#region	FUNÇÕES DE DESABILITAR
+
+# Description: disables the main mouse inputs
+disable_input_devices(){
+	xinput list | grep -E "slave +pointer" | grep -o 'id=[0-9]*' | cut -d= -f2 |
+
+	while read -r id; do 
+	xinput disable "$id"
+	done
+}
+
+#endregion --- end --- 
+
+
+#region	FUNÇÕES DE PENALIDADES
+
+# Description: first penalty if wrong input in 1st question
+trigger_penalty1(){
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
+	sleep 2
+	
+	for i in {1..60}; do
+		zenity --notification --text "Prepare-se..." &
+	done
+	
+	dir_effect
+	icon_desktop_size_effect
+	wallpaper_effect_on 
+
+	zenity_scatter "NÃOOOOOOO" &
+	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/prateado.jpeg "x(" & done
+	
+	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
+	disable_input_devices
+	image_scatter
+	exit 1
+}
+
+
+# Description: second penalty if input is wrong in the 2nd question
+trigger_penalty2(){
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
+	sleep 5
+	
+	for i in {1..400}; do 
+		fortune > ~/Desktop/"$i".txt;  
+	done
+	wait
+
+	file_scattering 
+	icon_desktop_size_effect
+
+	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "Dê tchau ao seu mouse" & done
+	disable_input_devices
+
+	wallpaper_effect_on
+	zenity_scatter "NÃOOOOOO" &
+	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
+
+	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
+
+	xcowsay -t 6 --cow-size med "CONTAGEM PROGRESSIVA:" 
+	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
+	for i in {1..300}; do xcowsay -t 10 --cow-size small --image ~/Downloads/squirward.jpeg & done
+	sleep 5
+
+	image_scatter
+	exit 1	
+}
+
+#endregion --- end --- 
+
+
+#region	MAIN
 
 # Description: Orchestrates the quiz stages and validates user answers.
 main(){ 
@@ -261,3 +293,5 @@ main(){
 }
 
 main "$@"
+
+#endregion
