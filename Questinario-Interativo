@@ -89,34 +89,36 @@ icon_desktop_size_effect(){
 
 # Description: changes the desktop image to a check symbol for 1.5 seconds then returns to the original desktop image 
 right_answer_effect(){
-	# Store original states of the proprierties
-	original_image="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image)" 
-
-	original_style="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style)"
-
-
-	# atributting numbers to the image files
-	"~/Downloads/prateado.jpeg"=1
-	"~/Downloads/parabens.jpeg"=2
-	"~/Downloads/correto.jpeg"=3
-
-	# generating random numbers
-	images_sorted="$((RANDOM % 3 + 1))"
-
+	
 	#sets the kind of display image pattern
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
-	
-	i=0
-	while true ; do
-	sleep 0.5
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "${images_sorted}" &
-	if (i<=120); do
-		((i++));
-	fi
-	
-	# Restore the original settings
-	# xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${original_style}" &
-	# xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "${original_image}" &
+
+
+	local i=0
+
+	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
+
+	while true ; do 
+		
+		used_images=(
+		"$HOME/Downloads/prateado.jpeg"
+		"$HOME/Downloads/parabens.jpeg"
+		"$HOME/Downloads/correto.jpeg"
+		)
+
+		x="$((RANDOM % 3))"
+
+		xfconf-query -c xfce4-desktop -p "${xfce_path}/last-image" -s "${used_images[x]}"
+
+		((++i))
+
+		if ((i>=120)); then
+			break
+		fi
+		
+		sleep 0.5
+
+	done
 }
 
 #endregion --- end --- 
