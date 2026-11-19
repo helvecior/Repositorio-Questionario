@@ -94,15 +94,29 @@ right_answer_effect(){
 
 	original_style="$(xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style)"
 
- 	# Apply the temporary wallpaper
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "$HOME/Downloads/parabens.jpeg" &
-	
-	sleep 1.5
 
+	# atributting numbers to the image files
+	"~/Downloads/prateado.jpeg"=1
+	"~/Downloads/parabens.jpeg"=2
+	"~/Downloads/correto.jpeg"=3
+
+	# generating random numbers
+	images_sorted="$((RANDOM % 3 + 1))"
+
+	#sets the kind of display image pattern
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
+	
+	i=0
+	while true ; do
+	sleep 0.5
+	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "${images_sorted}" &
+	if (i<=120); do
+		((i++));
+	fi
+	
 	# Restore the original settings
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${original_style}" &
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "${original_image}" &
+	# xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${original_style}" &
+	# xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s "${original_image}" &
 }
 
 #endregion --- end --- 
