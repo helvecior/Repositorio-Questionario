@@ -42,36 +42,26 @@ wallpaper_effect_on(){
 	done &
 }
 
-# Description: make tons of files and opens them, causing a system overload.
-# Used in the trigger_penalty2 to generate files and open them, causing a system overload.
-# shellcheck disable=SC2329
-file_scattering(){
-	# Description: opens tons of files in xed and moves them around the screen. 
-	while i in {1..150}; do 
+# Description: make tons of files or directories and opens them, causing a system overload.
+# Used in the trigger_penalty2 open files or existing directories in des, causing a system overload.
+# NOTE: since this is the last function, the & symbol is in the main section
+fileORdir_scattering(){
+	
+	local i=0
+
+	while true; do 
 		x=$((RANDOM % 1366))
 		y=$((RANDOM % 720))
-		z=$((RANDOM % 400 + 1))
-		xed --new-window ~/Desktop/$z.txt &
-		sleep 0.125
+		z=$((RANDOM % 1000 + 1))
+		w=$((RANDOM % 1000 + 1))
+		xed --new-window ~/Desktop/"$i".txt 
+		sleep 0.060
 		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
-		wmctrl -r :ACTIVE: -e 0,"$x","$y",50,50;
-	done &
+		wmctrl -r :ACTIVE: -e 0,$x,$y,$z,$w
+		
+		done 
 
 	# xdtool key ctrl+a
-}
-
-# Description: this function opens a jpeg imagem on a small window and moves it around the screen, creating a chaotic effect.
-image_scatter(){
-	
-	while true; do
-	x=$((RANDOM % 1366))
-	y=$((RANDOM % 720))
-	z=$((RANDOM % 1000 + 1))
-	w=$((RANDOM % 1000 + 1))
-	open ~/Downloads/*
-	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
-	wmctrl -r :ACTIVE: -e 0,$x,$y,$z,$w 
-	done &
 }
 
 # Description: creates new property if it doesn't exist; modifies the desktop icon size constantly 
@@ -80,10 +70,17 @@ icon_desktop_size_effect(){
 	xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -n -t int -s 48;
 
 	while true; do
-		local size=$((RANDOM % 100 + 1))
+		local size=$((RANDOM % 150 + 1))
 
 		xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -s "${size}";
 		sleep 0.20
+
+		((++i))
+
+		if ((i>=12000000)); then
+			break
+		fi
+
 	done &
 }
 
@@ -93,20 +90,29 @@ right_answer_effect(){
 	#sets the kind of display image pattern
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
 
-
 	local i=0
 
 	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
-	while true ; do 
+	while true; do 
 		
 		used_images=(
 		"$HOME/Downloads/prateado.jpeg"
 		"$HOME/Downloads/parabens.jpeg"
-		"$HOME/Downloads/correto.jpeg"
+		"$HOME/Downloads/correto.jpeg" 
+		"$HOME/Downloads/correto1.jpeg" 
+		"$HOME/Downloads/correto2.jpeg" 
+		"$HOME/Downloads/correto3.jpeg" 
+		"$HOME/Downloads/correto4.jpeg" 
+		"$HOME/Downloads/correto5.jpeg" 
+		"$HOME/Downloads/correto6.jpeg" 
+		"$HOME/Downloads/correto7.jpeg" 
+		"$HOME/Downloads/correto8.jpeg" 
+		"$HOME/Downloads/correto9.jpeg" 
+		"$HOME/Downloads/correto10.jpeg" 
 		)
 
-		x="$((RANDOM % 3))"
+		x="$((RANDOM % 13))"
 
 		xfconf-query -c xfce4-desktop -p "${xfce_path}/last-image" -s "${used_images[x]}"
 
@@ -116,9 +122,9 @@ right_answer_effect(){
 			break
 		fi
 		
-		sleep 0.5
+		sleep 0.500
 
-	done
+	done 
 }
 
 #endregion --- end --- 
@@ -136,13 +142,16 @@ xcowsay_size_image_dialog(){
 # Description: this function displays a zenity warning dialog with a specified message and moves it around the screen, creating a chaotic effect.
 # Arguments: $1= text shown in the warning
 zenity_scatter(){
-	
-	for i in {1..75}; do
+	local i=0 
+
+	for i in {1..50}; do
 	x=$((RANDOM % 1366))
 	y=$((RANDOM % 720))
+	z=$((RANDOM % 150 + 1))
+	w=$((RANDOM % 150 + 1))
 	zenity --warning --height 25 --width 75 --text "$1" &
 	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
-	wmctrl -r :ACTIVE: -e 0,$x,$y,-1,-1 &
+	wmctrl -r :ACTIVE: -e 0,$x,$y,$z,$w &
 	done
 }
 
@@ -157,9 +166,11 @@ perguntar(){
 
 #region FUNÇÕES DE CRIAÇÃO
 # Description: makes tons of directories
-dir_effect(){
-	for i in {1..490}; do 
-	mkdir ~/Desktop/"$(shuf -n1 /usr/share/dict/words)" &
+dir_maker(){
+	local i=0 
+	
+	for i in {1..100}; do 
+	mkdir $HOME/Desktop/"$i"
 	done
 }
 
@@ -172,6 +183,7 @@ report_generator(){
 	echo -e "Meu nome é (Seu Nome) e eu sobrevivi a essa dura jornada.\n" > ~/Desktop/jornada.txt
 	cowsay -f tux "O Sr. Linus Torvalds o/a congratula pelo seu desempenho!" >> ~/Desktop/jornada.txt
 	echo -e "\nSe você tiver alguma sugestão para melhorar o desafio, por favor, escreva abaixo, qualquer ideia será bem-vinda." >> ~/Desktop/jornada.txt
+	echo -e "\nColoque esse arquivo na pasta "Diário dos sobreviventes" dentro da pasta do IP do PC do Antônio, no mesmo lugar onde vocês pegaram as imagens.">> ~/Desktop/jornada.txt
 	xed ~/Desktop/jornada.txt
 }
 
@@ -216,20 +228,21 @@ trigger_penalty1(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 2
 	
-	for i in {1..60}; do
+	for i in {1..30}; do
 		zenity --notification --text "Prepare-se..." &
 	done
 	
-	dir_effect
-	icon_desktop_size_effect
+	dir_maker
+	wait
+	icon_desktop_size_effect 
 	wallpaper_effect_on 
 
-	zenity_scatter "NÃOOOOOOO" &
-	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/prateado.jpeg "x(" & done
+	zenity_scatter "NÃOOOOOOO"
 	
-	for i in {1..100}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "AGORA SEU MOUSE MORRERÁ" & done
-	disable_input_devices
-	image_scatter
+	#disable_input_devices
+	
+	fileORdir_scattering
+	
 	exit 1
 }
 
@@ -239,30 +252,27 @@ trigger_penalty2(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
 	
-	for i in {1..400}; do 
-		fortune > ~/Desktop/"$i".txt;  
-	done
-	wait
-
-	file_scattering 
+	dir_maker
+	wait 
 	icon_desktop_size_effect
-
-	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/misterio.jpeg "Dê tchau ao seu mouse" & done
-	disable_input_devices
-
 	wallpaper_effect_on
+	 
+	#disable_input_devices
+
+
 	zenity_scatter "NÃOOOOOO" &
 	for i in {1..50}; do xcowsay_size_image_dialog small ~/Downloads/ghost.jpeg "VoCê ErRoUuUuUuUuUu :(" & done
 
-	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/ghost.jpeg "NÃOOOOOOOOOOO" & done
+	for i in {1..30}; do xcowsay_size_image_dialog med ~/Downloads/correto10.jpeg "NÃOOOOOOOOOOO";  done
 
 	xcowsay -t 6 --cow-size med "CONTAGEM PROGRESSIVA:" 
 	for i in {1..10}; do xcowsay -t 0,850 "$i"; done 
-	for i in {1..300}; do xcowsay -t 10 --cow-size small --image ~/Downloads/squirward.jpeg & done
+	for i in {1..100}; do xcowsay -t 8 --cow-size small --image ~/Downloads/squirward.jpeg & done
 	sleep 5
 
-	image_scatter
-	exit 1	
+	fileORdir_scattering
+	
+	exit 1 	
 }
 
 #endregion --- end --- 
@@ -299,7 +309,7 @@ main(){
 	if [ "${answer2}" = "chmod" ]; then
 		
 		zenity --info --height 150 --width 300 --title "Correto" --text "Parabéns, resposta correta!!"
-		right_answer_effect
+		right_answer_effect &
 
 		sleep 1
 		complete_challenge
