@@ -21,7 +21,6 @@ trap_end_signal(){
 
 # Description: modifies the timer, period and enables cycling between the wallpaper images, creates new properties if they don't exist. 
 wallpaper_effect_on(){
-	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 	
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -s true ||
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -n -t bool -s true
@@ -38,34 +37,27 @@ wallpaper_effect_on(){
 	while true; do
 	local custom_value=$((RANDOM % 6))
 		xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${custom_value}";
-		sleep 4
 	done &
 }
 
 # Description: make tons of files or directories and opens them, causing a system overload.
 # Used in the trigger_penalty2 open files or existing directories in des, causing a system overload.
 # NOTE: since this is the last function, the & symbol is in the main section
-fileORdir_scattering(){
-	
-	local i=0
+file_scattering(){
 
-	while true; do 
+	# Description: opens tons of files in xed and moves them around the screen. 
+	while i in {1..150}; do 
 		x=$((RANDOM % 1366))
 		y=$((RANDOM % 720))
-		z=$((RANDOM % 1000 + 1))
-		w=$((RANDOM % 1000 + 1))
-		xed --new-window ~/Desktop/"$i".txt 
-		sleep 0.060
+		z=$((RANDOM % 400 + 1))
+		xed --new-window ~/Desktop/$z.txt &
+		sleep 0.125
 		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
-		wmctrl -r :ACTIVE: -e 0,$x,$y,$z,$w
-		
-		done 
-
-	# xdtool key ctrl+a
+		wmctrl -r :ACTIVE: -e 0,"$x","$y",50,50;
+	done &
 }
 
 # Description: creates new property if it doesn't exist; modifies the desktop icon size constantly 
-# shellcheck disable=SC2329
 icon_desktop_size_effect(){
 	xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -n -t int -s 48;
 
@@ -75,11 +67,11 @@ icon_desktop_size_effect(){
 		xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -s "${size}";
 		sleep 0.20
 
-		((++i))
-
-		if ((i>=12000000)); then
-			break
-		fi
+		#((++i))
+#
+		#if ((i>=12000000)); then
+		#	break
+		#fi
 
 	done &
 }
@@ -90,7 +82,6 @@ right_answer_effect(){
 	#sets the kind of display image pattern
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
 
-	local i=0
 
 	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
@@ -112,15 +103,15 @@ right_answer_effect(){
 		"$HOME/Downloads/correto10.jpeg" 
 		)
 
-		x="$((RANDOM % 13))"
+		local x="$((RANDOM % 13))"
 
 		xfconf-query -c xfce4-desktop -p "${xfce_path}/last-image" -s "${used_images[x]}"
 
-		((++i))
-
-		if ((i>=120)); then
-			break
-		fi
+		#((++i))
+#
+		#if ((i>=120)); then
+		#	break
+		#fi
 		
 		sleep 0.500
 
@@ -142,13 +133,12 @@ xcowsay_size_image_dialog(){
 # Description: this function displays a zenity warning dialog with a specified message and moves it around the screen, creating a chaotic effect.
 # Arguments: $1= text shown in the warning
 zenity_scatter(){
-	local i=0 
 
 	for i in {1..50}; do
-	x=$((RANDOM % 1366))
-	y=$((RANDOM % 720))
-	z=$((RANDOM % 150 + 1))
-	w=$((RANDOM % 150 + 1))
+	local x=$((RANDOM % 1366))
+	local y=$((RANDOM % 720))
+	local z=$((RANDOM % 150 + 1))
+	local w=$((RANDOM % 150 + 1))
 	zenity --warning --height 25 --width 75 --text "$1" &
 	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
 	wmctrl -r :ACTIVE: -e 0,$x,$y,$z,$w &
@@ -167,10 +157,9 @@ perguntar(){
 #region FUNÇÕES DE CRIAÇÃO
 # Description: makes tons of directories
 dir_maker(){
-	local i=0 
 	
-	for i in {1..100}; do 
-	mkdir $HOME/Desktop/"$i"
+	for i in {1..200}; do 
+		mkdir $HOME/Desktop/"$i"
 	done
 }
 
@@ -214,7 +203,7 @@ disable_input_devices(){
 	xinput list | grep -E "slave +pointer" | grep -o 'id=[0-9]*' | cut -d= -f2 |
 
 	while read -r id; do 
-	xinput disable "$id"
+		xinput disable "$id"
 	done
 }
 
@@ -228,12 +217,14 @@ trigger_penalty1(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 2
 	
-	for i in {1..30}; do
+	for i in {1..150}; do
 		zenity --notification --text "Prepare-se..." &
 	done
 	
 	dir_maker
 	wait
+	sleep 3
+
 	icon_desktop_size_effect 
 	wallpaper_effect_on 
 
@@ -241,7 +232,7 @@ trigger_penalty1(){
 	
 	#disable_input_devices
 	
-	fileORdir_scattering
+	file_scattering
 	
 	exit 1
 }
@@ -252,8 +243,15 @@ trigger_penalty2(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
 	
+	for i in {1..150}; do
+		zenity --notification --text "Prepare-se..." &
+	done
+
+
 	dir_maker
 	wait 
+	sleep 3
+
 	icon_desktop_size_effect
 	wallpaper_effect_on
 	 
@@ -270,7 +268,7 @@ trigger_penalty2(){
 	for i in {1..100}; do xcowsay -t 8 --cow-size small --image ~/Downloads/squirward.jpeg & done
 	sleep 5
 
-	fileORdir_scattering
+	file_scattering
 	
 	exit 1 	
 }
