@@ -1,12 +1,17 @@
 #!/bin/bash
 
-#region	#? CONSTANTS FOR THE SCRIPT
+#region	#? DETERMINANDO CONSTANTES PARA O SCRIPT
 readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
 #endregion
 
 
 #region #? FUNÇÕES DE INICIALIZAÇÃO  
+
+# Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
+trap_end_signal(){
+	trap "" SIGINT SIGTERM
+}
 
 #endregion --- end --- 
 
@@ -199,11 +204,6 @@ complete_challenge(){
 
 #region	#? FUNÇÕES DE DESABILITAR
 
-# Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
-trap_end_signal(){
-	trap "" SIGINT SIGTERM
-}
-
 # Description: disables the main mouse inputs
 disable_input_devices(){
 	xinput list | grep -E "slave +pointer" | grep -o 'id=[0-9]*' | cut -d= -f2 |
@@ -281,9 +281,10 @@ trigger_penalty2(){
 #endregion --- end --- 
 
 
-#? MODES  
+#region	#? MAIN
 
-mode-1(){ 
+# Description: Orchestrates the quiz stages and validates user answers.
+main(){ 
 
 	trap_end_signal
 
@@ -317,17 +318,6 @@ mode-1(){
 	fi
 }
 
-##region	#? MAIN
-#
-## Description: Orchestrates the quiz stages and validates user answers.
-#main(){
-#
-#if ;then
-#	mode-1
-#fi
-#
-#}
-#
-#main "$@"
+main "$@"
 
 #endregion
