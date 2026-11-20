@@ -10,7 +10,9 @@ readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
 # Description: text that appears in Bash when the script is called
 choose_mode(){
-	{ echo -e "\nMenu de seleção:\n\n" "1. Iniciante no Linux\n" "2. Experiente no Linux\n" "3. Fechar o script" 
+	{ echo -e "\nMenu de seleção:\n\n" "1. Iniciante no Linux\n \tDescriçao: comandos simples, sem opcoes, respostas por extenso\n"\
+	"2. Experiente no Linux\n \tDescricao: selecione entre 4 respostas, comandos mais variados\n"\
+	"3. Fechar o script" 
 	}
 
 	while read -p "Qual modo você quer escolher?"; do
