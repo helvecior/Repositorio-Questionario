@@ -3,7 +3,6 @@
 #region	DETERMINANDO CONSTANTES PARA O SCRIPT
 readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
-
 #endregion
 
 
@@ -19,9 +18,10 @@ trap_end_signal(){
 
 #region	FUNÇÕES DE EFEITOS DE TELA 
 
-# Description: modifies the timer, period and enables cycling between the wallpaper images, creates new properties if they don't exist. 
+# Description: modifies the timer, period and enables cycling between the wallpaper images, creates new properties in case they don't exist. 
 wallpaper_effect_on(){
 	
+	# Description
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -s true ||
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -n -t bool -s true
  
@@ -31,9 +31,10 @@ wallpaper_effect_on(){
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-timer -s 1 ||
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-timer -n -t int -s 1
 
-	# Changes the presentation style of the background image
+	# Creates a parameter that changes the style of the background image
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -n -t int -s 5
-		
+	
+	# Persistent change of the format of the background
 	while true; do
 	local custom_value=$((RANDOM % 6))
 		xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${custom_value}";
@@ -159,7 +160,7 @@ perguntar(){
 dir_maker(){
 	
 	for i in {1..200}; do 
-		mkdir $HOME/Desktop/"$i"
+		mkdir "$HOME"/Desktop/"$i"
 	done
 }
 
@@ -169,10 +170,12 @@ dir_maker(){
 #region FUNÇÕES DE CONCLUSÃO 
 # Description: generates a report file on the desktop with a congratulatory message and a request for feedback, then opens it in xed for the user to edit.
 report_generator(){
-	echo -e "Meu nome é (Seu Nome) e eu sobrevivi a essa dura jornada.\n" > ~/Desktop/jornada.txt
-	cowsay -f tux "O Sr. Linus Torvalds o/a congratula pelo seu desempenho!" >> ~/Desktop/jornada.txt
-	echo -e "\nSe você tiver alguma sugestão para melhorar o desafio, por favor, escreva abaixo, qualquer ideia será bem-vinda." >> ~/Desktop/jornada.txt
-	echo -e "\nColoque esse arquivo na pasta "Diário dos sobreviventes" dentro da pasta do IP do PC do Antônio, no mesmo lugar onde vocês pegaram as imagens.">> ~/Desktop/jornada.txt
+	{ 
+	echo -e "Meu nome é (Seu Nome) e eu sobrevivi a essa dura jornada.\n";
+	cowsay -f tux "O Sr. Linus Torvalds o/a congratula pelo seu desempenho!";
+	echo -e "\nSe você tiver alguma sugestão para melhorar o desafio, por favor, escreva abaixo, qualquer ideia será bem-vinda.";
+	echo -e "\nColoque esse arquivo na pasta "Diário dos sobreviventes" dentro da pasta do IP do PC do Antônio, no mesmo local onde vocês pegaram as imagens."
+	} >> ~/Desktop/jornada.txt
 	xed ~/Desktop/jornada.txt
 }
 
@@ -279,7 +282,6 @@ trigger_penalty2(){
 
 # Description: Orchestrates the quiz stages and validates user answers.
 main(){ 
-	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
 	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/ceu.jpeg
 
