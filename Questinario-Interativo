@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#region	DETERMINANDO CONSTANTES PARA O SCRIPT
+#region	#? DETERMINANDO CONSTANTES PARA O SCRIPT
 readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
 #endregion
 
 
-#region FUNÇÕES DE INICIALIZAÇÃO  
+#region #? FUNÇÕES DE INICIALIZAÇÃO  
 
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 trap_end_signal(){
@@ -16,7 +16,7 @@ trap_end_signal(){
 #endregion --- end --- 
 
 
-#region	FUNÇÕES DE EFEITOS DE TELA 
+#region	#? FUNÇÕES DE EFEITOS DE TELA 
 
 # Description: modifies the timer, period and enables cycling between the wallpaper images, creates new properties in case they don't exist. 
 wallpaper_effect_on(){
@@ -122,7 +122,8 @@ right_answer_effect(){
 #endregion --- end --- 
 
 
-#region FUNÇÕES DE DISPLAY
+#region #? FUNÇÕES DE DISPLAY
+
 # Description: this function displays a xcowsay with variable cow size, image and an specified text message.
 # Also presents a custom font for the message.
 # Arguments: $1 - The cow size (small, med, large), $2 - The image path, $3 - The message to display
@@ -155,7 +156,8 @@ perguntar(){
 #endregion --- end --- 
 
 
-#region FUNÇÕES DE CRIAÇÃO
+#region #? FUNÇÕES DE CRIAÇÃO
+
 # Description: makes tons of directories
 dir_maker(){
 	
@@ -167,7 +169,8 @@ dir_maker(){
 #endregion --- end --- 
 
 
-#region FUNÇÕES DE CONCLUSÃO 
+#region #? FUNÇÕES DE CONCLUSÃO 
+
 # Description: generates a report file on the desktop with a congratulatory message and a request for feedback, then opens it in xed for the user to edit.
 report_generator(){
 	{ 
@@ -199,7 +202,7 @@ complete_challenge(){
 #endregion --- end --- 
 
 
-#region	FUNÇÕES DE DESABILITAR
+#region	#? FUNÇÕES DE DESABILITAR
 
 # Description: disables the main mouse inputs
 disable_input_devices(){
@@ -213,7 +216,7 @@ disable_input_devices(){
 #endregion --- end --- 
 
 
-#region	FUNÇÕES DE PENALIDADES
+#region	#? FUNÇÕES DE PENALIDADES
 
 # Description: first penalty if wrong input in 1st question
 trigger_penalty1(){
@@ -278,16 +281,14 @@ trigger_penalty2(){
 #endregion --- end --- 
 
 
-#region	MAIN
+#region	#? MAIN
 
 # Description: Orchestrates the quiz stages and validates user answers.
 main(){ 
 
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/ceu.jpeg
-
 	trap_end_signal
 
-	zenity --warning --height 300 --width 500 --title "Aviso" --text "Na verdade, o teste começará agora, boa sorte!"
+	zenity --warning --height 300 --width 500 --title "Aviso" --text "O teste começará agora, boa sorte!"
 	
 	# FIRST QUESTION
 
