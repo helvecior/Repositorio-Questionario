@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 #region	#? DETERMINANDO CONSTANTES PARA O SCRIPT
 readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
@@ -7,6 +7,36 @@ readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
 
 #region #? FUNÇÕES DE INICIALIZAÇÃO  
+
+# Description: text that appears in Bash when the script is called
+choose_mode(){
+	{ echo -e "\nMenu de seleção:\n\n" "1. Iniciante no Linux\n" "2. Experiente no Linux\n" "3. Fechar o script" 
+	}
+
+	while read -p "Qual modo você quer escolher?"; do
+	
+		if [ "${read}" -eq 1 ]; then
+			#mode_1
+			echo "Então você é iniciante né?"
+			break
+
+			elif [ "${read}" -eq 2 ]; then
+			#mode_2 
+			echo "Então você é experiente né?" 
+			break
+
+		else 
+			echo "Fechando em 5 segundos:"		
+			for i in {1..5}; do
+			echo -e "$i..."; 
+			sleep 1
+			done			
+			exit 1 
+			
+		fi
+	done
+}
+
 
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 trap_end_signal(){
@@ -166,11 +196,6 @@ dir_maker(){
 	done
 }
 
-#endregion --- end --- 
-
-
-#region #? FUNÇÕES DE CONCLUSÃO 
-
 # Description: generates a report file on the desktop with a congratulatory message and a request for feedback, then opens it in xed for the user to edit.
 report_generator(){
 	{ 
@@ -182,6 +207,10 @@ report_generator(){
 	xed ~/Desktop/jornada.txt
 }
 
+#endregion --- end --- 
+
+
+#region #? FUNÇÕES DE CONCLUSÃO 
 
 # Description: Handles the success workflow when both stages are passed and opening it.
 complete_challenge(){
@@ -281,11 +310,10 @@ trigger_penalty2(){
 #endregion --- end --- 
 
 
-#region	#? MAIN
+#region	#? FUNÇÕES DE MODE EXECUTION
 
-# Description: Orchestrates the quiz stages and validates user answers.
-main(){ 
-
+# Description: was the previous main function, due to expasion of more modes, made into mode-1
+mode_1(){
 	trap_end_signal
 
 	zenity --warning --height 300 --width 500 --title "Aviso" --text "O teste começará agora, boa sorte!"
@@ -316,8 +344,23 @@ main(){
 	else
 		trigger_penalty2
 	fi
+
 }
 
-main "$@"
+# shellcheck disable=SC1073
+#mode_2
+
+#endregion
+
+
+#region	#? MAIN
+
+# Description: Orchestrates the quiz stages and validates user answers.
+# Description: transformed into mode-1
+#main(){ 
+#
+#}
+#
+#main "$@"
 
 #endregion
