@@ -22,7 +22,7 @@ choose_mode(){
 	"\n\n2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados"\
 	"\n\n3. Fechar o script\n"
 	
-	while read -p "Qual modo você quer escolher, "$name"? " entry ; do
+	while read -p "Qual opcao deseja escolher, "$name"? " entry ; do &=
 	
 		if [ "$entry" = "1" ]; then
 			echo -e "\nEntão você é iniciante né? Bom teste para você, "$name"!"
@@ -35,23 +35,19 @@ choose_mode(){
 			break
 
 			elif [ "$entry" = "3" ]; then
-				
 				echo -e "\nFechando em 5 segundos:"		
-				
 				for i in {1..5}; do
 					echo -e "$i..."; 
 					sleep 1
-
 					# closes the function without closing the bash
-					return 0
 				done	
+					return 0
 
 			# If idle for 20 seconds
-			elif ( for i in {1..20}; do sleep 1; done ); then
+			elif for i in {1..20}; do sleep 1; done; then
 				echo -e "Olaaaa "$name", voce esta ainda ai ?"
  			
-
-		else
+		else 
 			echo -e "\nOpção digitada inválida, digite:"\
 			"\n1 --> (Modo Iniciante); \n2 --> (Modo Experiente); \n3 --> (Sair).\n"	
 		fi
