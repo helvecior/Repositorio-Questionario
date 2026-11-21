@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#region	#? DETERMINANDO CONSTANTES PARA O SCRIPT
-readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
+#region	#? CONSTANTES PARA O SCRIPT
+readonly XFCE_PATH="/backdrop/screen0/monitorVirtual1/workspace0"
 
 #endregion
 
@@ -11,8 +11,11 @@ readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 # Description: text that appears in Bash when the script is called
 choose_mode(){
 
+	local entry i 
+
 	# Get's the name of who's running the script
-	read -r -p "Por favor, digite seu nome: " name
+	echo 
+	read -r -p "Por favor, digite seu nome: " name || return 1 
 
 	# Context menu
 	echo -e \
@@ -20,36 +23,54 @@ choose_mode(){
 	"\n\nMenu de seleção do tipo de questionario:"\
 	"\n\n1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso"\
 	"\n\n2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados"\
-	"\n\n3. Fechar o script\n"
-	
+	"\n\n3. Sair\n"
+
+	#{
+	#printf '\nOlá %s! seja bem-vindo(a) ao Questionário Interativo!' "${name}"
+	#printf '\n%s'\
+	#''\
+	#'Menu de seleção do tipo de questionario:'\
+	#''\
+	#'1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso'\
+	#''\
+	#'2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados'\
+	#''\
+	#'3. Sair\n'
+	#} 
+		
 	while read -p "Qual opcao deseja escolher, "$name"? " entry ; do
 	
-		if [ "$entry" = "1" ]; then
+		if [[ "$entry" == "1" ]]; then
 			echo -e "\nEntão você é iniciante né? Bom teste para você, "$name"!"
 			#mode_1
 			break
 
-			elif [ "$entry" = "2" ]; then
-				#mode_2 
-				echo -e "\nEntão você é experiente né? Bom teste para você, "$name"!" 
-			break
+		elif [[ "$entry" == "2" ]]; then
+			#mode_2 
+			echo -e "\nEntão você é experiente né? Bom teste para você, "$name"!" 
+		break
 
-			elif [ "$entry" = "3" ]; then
-				echo -e "\nFechando em 5 segundos:"		
-				for i in {1..5}; do
-					echo -e "$i..."; 
-					sleep 1
-					# closes the function without closing the bash
-				done	
-					return 0
+		# closes the function without closing the bash
+		elif [[ "$entry" == "3" ]]; then
+			echo -e "\nFechando em 5 segundos:"		
+			for i in {1..5}; do
+				echo -e "$i..."; 
+				sleep 1
+			done	
+				return 0
 
-			# If idle for 20 seconds
-			elif for i in {1..20}; do sleep 1; done; then
-				echo -e "Olaaaa "$name", voce esta ainda ai ?"
- 			
+		# If idle for 20 seconds, presents text
+		elif for i in {1..20}; do sleep 1; done; then
+			echo -e "Olaaaa "$name", voce esta ainda ai ?"
+		
 		else 
-			echo -e "\nOpção digitada inválida, digite:"\
-			"\n1 --> (Modo Iniciante); \n2 --> (Modo Experiente); \n3 --> (Sair).\n"	
+			printf '\n%s'\
+			'Opção digitada inválida, digite:'\
+			''\
+			'1 --> Modo Iniciante'\
+			'2 --> Modo Experiente'\
+			'3 --> Sair'\
+			''
 		fi
 	done
 }
@@ -69,22 +90,22 @@ trap_end_signal(){
 wallpaper_effect_on(){
 	
 	# Description
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -s true ||
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-enable -n -t bool -s true
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/backdrop-cycle-enable -s true ||
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/backdrop-cycle-enable -n -t bool -s true
  
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-period -s 0 ||
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-period -n -t int -s 0
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/backdrop-cycle-period -s 0 ||
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/backdrop-cycle-period -n -t int -s 0
 
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-timer -s 1 ||
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/backdrop-cycle-timer -n -t int -s 1
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/backdrop-cycle-timer -s 1 ||
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/backdrop-cycle-timer -n -t int -s 1
 
 	# Creates a parameter that changes the style of the background image
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -n -t int -s 5
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/image-style -n -t int -s 5
 	
 	# Persistent change of the format of the background
 	while true; do
 	local custom_value=$((RANDOM % 6))
-		xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s "${custom_value}";
+		xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/image-style -s "${custom_value}";
 	done &
 }
 
@@ -128,10 +149,10 @@ icon_desktop_size_effect(){
 right_answer_effect(){
 	
 	#sets the kind of display image pattern
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/image-style -s 2 &
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/image-style -s 2 &
 
 
-	readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
+	readonly XFCE_PATH="/backdrop/screen0/monitorVirtual1/workspace0"
 
 	while true; do 
 		
@@ -153,7 +174,7 @@ right_answer_effect(){
 
 		local x="$((RANDOM % 13))"
 
-		xfconf-query -c xfce4-desktop -p "${xfce_path}/last-image" -s "${used_images[x]}"
+		xfconf-query -c xfce4-desktop -p "${XFCE_PATH}/last-image" -s "${used_images[x]}"
 
 		#((++i))
 #
@@ -231,7 +252,7 @@ report_generator(){
 
 # Description: Handles the success workflow when both stages are passed and opening it.
 complete_challenge(){
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/parabens.jpeg;
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/last-image -s ~/Downloads/parabens.jpeg;
 	
 	zenity --info --height 150 --width 300 --title "PARABÉNS VOCÊ CONCLUIU SUA JORNADA" \
 	--text "Agora, preencha seu relatório no arquivo jornada.txt";
@@ -266,7 +287,7 @@ disable_input_devices(){
 
 # Description: first penalty if wrong input in 1st question
 trigger_penalty1(){
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 2
 	
 	for i in {1..150}; do
@@ -291,7 +312,7 @@ trigger_penalty1(){
 
 # Description: second penalty if input is wrong in the 2nd question
 trigger_penalty2(){
-	xfconf-query -c xfce4-desktop -p "${xfce_path}"/last-image -s ~/Downloads/squirward.jpeg;
+	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/last-image -s ~/Downloads/squirward.jpeg;
 	sleep 5
 	
 	for i in {1..150}; do
