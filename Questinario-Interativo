@@ -73,15 +73,10 @@ choose_mode(){
 			''\
 			'1 --> Modo Iniciante'\
 			'2 --> Modo Experiente'\
-			'3 --> Sair'\
+			'3 --> Modo de aprendizagem dos comandos'\
+			'4 --> Sair'\
 			''
 		fi
-}
-
-
-# Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
-trap_end_signal(){
-	trap "" SIGINT SIGTERM
 }
 
 #endregion --- end --- 
@@ -248,8 +243,7 @@ report_generator(){
 
 
 #region #? FUNÇÕES DE CONCLUSÃO 
-
-# Description: Handles the success workflow when both stages are passed and opening it.
+# Description: stage when all answers are right and executes a set of procedures that indicate the success
 complete_challenge(){
 	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/last-image -s ~/Downloads/parabens.jpeg;
 	
@@ -269,6 +263,13 @@ complete_challenge(){
 
 
 #region	#? FUNÇÕES DE DESABILITAR
+
+
+# Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
+trap_end_signal(){
+	trap "" SIGINT SIGTERM
+}
+
 
 # Description: disables the main mouse inputs
 disable_input_devices(){
@@ -305,7 +306,6 @@ trigger_penalty1(){
 	#disable_input_devices
 	
 	file_scattering
-	
 }
 
 
@@ -339,8 +339,6 @@ trigger_penalty2(){
 	sleep 5
 
 	file_scattering
-	
-	exit 0	
 }
 
 #endregion --- end --- 
