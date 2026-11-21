@@ -1,14 +1,16 @@
 #!/bin/bash
 
 #region	#? CONSTANTES PARA O SCRIPT
+
+# part of the PATH to the property that changes the background
 readonly XFCE_PATH="/backdrop/screen0/monitorVirtual1/workspace0"
 
 #endregion
 
 
-#region #? FUNÇÕES DE INICIALIZAÇÃO  
+#region #? FUNÇÕES DE INICIALIZAÇÃO 
 
-# Description: text that appears in Bash when the script is called
+# Description: ask for name and prints the mode selection section
 choose_mode(){
 
 	local entry i 
@@ -19,35 +21,35 @@ choose_mode(){
 
 	# Context menu
 	echo -e \
-	"\nOlá "$name"! Seja bem-vindo(a) ao Questionario Interativo!"\
+	"\nOlá $name! Seja bem-vindo(a) ao Questionario Interativo!"\
 	"\n\nMenu de seleção do tipo de questionario:"\
 	"\n\n1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso"\
 	"\n\n2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados"\
-	"\n\n3. Sair\n"
+	"\n\n3. Sair"
 
-	#{
-	#printf '\nOlá %s! seja bem-vindo(a) ao Questionário Interativo!' "${name}"
-	#printf '\n%s'\
-	#''\
-	#'Menu de seleção do tipo de questionario:'\
-	#''\
-	#'1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso'\
-	#''\
-	#'2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados'\
-	#''\
-	#'3. Sair\n'
-	#} 
+
+	# Asks for name, if idle for 20 seconds, aks for the user if he's there
+	while true; do
+		echo 
+		read -r -t 20 -p "Qual opcao deseja escolher, ${name}? " entry || {
 		
-	while read -p "Qual opcao deseja escolher, "$name"? " entry ; do
-	
+		read_status=$?
+		if (( "$read_status" > 128 )); then 
+			echo -e "\n\nOlaaaa ${name}, voce esta ainda ai ?"
+			continue 
+		fi
+		}
+		break
+	done
+
 		if [[ "$entry" == "1" ]]; then
-			echo -e "\nEntão você é iniciante né? Bom teste para você, "$name"!"
+			echo -e "\nEntão você é iniciante né? Bom teste para você, ${name}!"
 			#mode_1
 			break
 
 		elif [[ "$entry" == "2" ]]; then
 			#mode_2 
-			echo -e "\nEntão você é experiente né? Bom teste para você, "$name"!" 
+			echo -e "\nEntão você é experiente né? Bom teste para você, ${name}!" 
 		break
 
 		# closes the function without closing the bash
@@ -59,10 +61,6 @@ choose_mode(){
 			done	
 				return 0
 
-		# If idle for 20 seconds, presents text
-		elif for i in {1..20}; do sleep 1; done; then
-			echo -e "Olaaaa "$name", voce esta ainda ai ?"
-		
 		else 
 			printf '\n%s'\
 			'Opção digitada inválida, digite:'\
@@ -72,7 +70,6 @@ choose_mode(){
 			'3 --> Sair'\
 			''
 		fi
-	done
 }
 
 
@@ -89,7 +86,6 @@ trap_end_signal(){
 # Description: modifies the timer, period and enables cycling between the wallpaper images, creates new properties in case they don't exist. 
 wallpaper_effect_on(){
 	
-	# Description
 	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/backdrop-cycle-enable -s true ||
 	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/backdrop-cycle-enable -n -t bool -s true
  
@@ -109,12 +105,9 @@ wallpaper_effect_on(){
 	done &
 }
 
-# Description: make tons of files or directories and opens them, causing a system overload.
-# Used in the trigger_penalty2 open files or existing directories in des, causing a system overload.
-# NOTE: since this is the last function, the & symbol is in the main section
+# Description: opens tons of files in xed and moves them around the screen. 
 file_scattering(){
 
-	# Description: opens tons of files in xed and moves them around the screen. 
 	while true; do 
 		x=$((RANDOM % 1366))
 		y=$((RANDOM % 720))
@@ -347,7 +340,7 @@ trigger_penalty2(){
 #endregion --- end --- 
 
 
-#region	#? FUNÇÕES DE MODE EXECUTION
+#region	#? MODE FUNCTIONS
 
 # Description: was the previous main function, due to expasion of more modes, made into mode-1
 mode_1(){
@@ -390,15 +383,13 @@ mode_1(){
 
 
 #region	#? MAIN
-
 # Description: Orchestrates the quiz stages and validates user answers.
 # Description: transformed into mode-1
-#main(){ 
-#
-#}
-#
-#main "$@"
+main(){ 
+	choose_mode
+}
+
+main "$@"
 
 #endregion
-# shellcheck disable=SC1072
-# shellcheck disable=SC1072
+
