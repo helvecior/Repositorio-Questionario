@@ -22,7 +22,7 @@ choose_mode(){
 	"\n\n2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados"\
 	"\n\n3. Fechar o script\n"
 	
-	while read -p "Qual opcao deseja escolher, "$name"? " entry ; do &=
+	while read -p "Qual opcao deseja escolher, "$name"? " entry ; do
 	
 		if [ "$entry" = "1" ]; then
 			echo -e "\nEntão você é iniciante né? Bom teste para você, "$name"!"
@@ -94,15 +94,15 @@ wallpaper_effect_on(){
 file_scattering(){
 
 	# Description: opens tons of files in xed and moves them around the screen. 
-	while i in {1..150}; do 
+	while true; do 
 		x=$((RANDOM % 1366))
 		y=$((RANDOM % 720))
 		z=$((RANDOM % 400 + 1))
-		xed --new-window ~/Desktop/$z.txt &
-		sleep 0.125
+		xed --new-window ~/Desktop/$z.txt 
+		# sleep 0.125
 		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
 		wmctrl -r :ACTIVE: -e 0,"$x","$y",50,50;
-	done &
+	done 
 }
 
 # Description: creates new property if it doesn't exist; modifies the desktop icon size constantly 
@@ -117,7 +117,7 @@ icon_desktop_size_effect(){
 
 		#((++i))
 #
-		#if ((i>=12000000)); then
+		#if ((i>=6000)); then
 		#	break
 		#fi
 
@@ -286,7 +286,6 @@ trigger_penalty1(){
 	
 	file_scattering
 	
-	exit 0
 }
 
 
@@ -333,12 +332,12 @@ trigger_penalty2(){
 mode_1(){
 	trap_end_signal
 
-	zenity --warning --height 300 --width 500 --title "Aviso" --text "O teste começará agora, boa sorte!"
+	zenity --info --height 300 --width 500 --title "Aviso" --text "O teste começará agora, boa sorte!"
 	
 	# FIRST QUESTION
 
 	local answer1
-	answer1="$(perguntar "1" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")" 
+	answer1="$(perguntar "1ª pergunta" "Qual o nome do comando que cria uma pasta ?	pense antes, não haverá segundas chances...")" 
 
 	if [ "${answer1}" = "mkdir" ]; then
 		zenity --info --height 150 --width 300 --title "Correto" --text "Parabéns, resposta correta!!"
@@ -348,7 +347,7 @@ mode_1(){
 	# SECOND QUESTION
 
   	local answer2
-  	answer2="$(perguntar "2" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ?\
+  	answer2="$(perguntar "2ª pergunta" "Qual o nome do comando muda as permissões de acesso de uma pasta ou arquivo ?\
 	pense antes, não haverá segundas chances...")"
  	
 	if [ "${answer2}" = "chmod" ]; then
@@ -364,8 +363,7 @@ mode_1(){
 
 }
 
-# shellcheck disable=SC1073
-#mode_2
+#mode_2()
 
 #endregion
 
