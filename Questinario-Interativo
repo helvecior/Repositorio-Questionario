@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Criador do código: Helvecio Resende Chaves
+
+
 #region	#? CONSTANTES PARA O SCRIPT
 
 # part of the PATH to the property that changes the background
@@ -25,7 +28,8 @@ choose_mode(){
 	"\n\nMenu de seleção do tipo de questionario:"\
 	"\n\n1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso"\
 	"\n\n2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados"\
-	"\n\n3. Sair"
+	"\n\n3. Modo aprendizado de comandos \nDescricao: seção que explica a sintaxe de comandos no Linux"\
+	"\n\n4. Sair"
 
 
 	# Asks for name, if idle for 20 seconds, aks for the user if he's there
@@ -45,15 +49,17 @@ choose_mode(){
 		if [[ "$entry" == "1" ]]; then
 			echo -e "\nEntão você é iniciante né? Bom teste para você, ${name}!"
 			#mode_1
-			break
 
 		elif [[ "$entry" == "2" ]]; then
 			#mode_2 
 			echo -e "\nEntão você é experiente né? Bom teste para você, ${name}!" 
-		break
+		
+		elif [[ "$entry" == "3" ]]; then
+			#mode_3
+			echo -e "\nMuito bem ${name}! Vamos começar a jornada de aprendizado dos comandos no Bash."
 
 		# closes the function without closing the bash
-		elif [[ "$entry" == "3" ]]; then
+		elif [[ "$entry" == "4" ]]; then
 			echo -e "\nFechando em 5 segundos:"		
 			for i in {1..5}; do
 				echo -e "$i..."; 
@@ -377,7 +383,9 @@ mode_1(){
 
 }
 
-#mode_2()
+#mode_2(){}
+
+#mode_3(){}
 
 #endregion
 
