@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 #region	#? DETERMINANDO CONSTANTES PARA O SCRIPT
 readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
@@ -10,31 +10,50 @@ readonly xfce_path="/backdrop/screen0/monitorVirtual1/workspace0"
 
 # Description: text that appears in Bash when the script is called
 choose_mode(){
-	{ echo -e "\nMenu de seleção:\n\n" "1. Iniciante no Linux\n \tDescriçao: comandos simples, sem opcoes, respostas por extenso\n"\
-	"2. Experiente no Linux\n \tDescricao: selecione entre 4 respostas, comandos mais variados\n"\
-	"3. Fechar o script" 
-	}
 
-	while read -p "Qual modo você quer escolher?"; do
+	# Get's the name of who's running the script
+	read -r -p "Por favor, digite seu nome: " name
+
+	# Context menu
+	echo -e \
+	"\nOlá "$name"! Seja bem-vindo(a) ao Questionario Interativo!"\
+	"\n\nMenu de seleção do tipo de questionario:"\
+	"\n\n1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso"\
+	"\n\n2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados"\
+	"\n\n3. Fechar o script\n"
 	
-		if [ "${read}" -eq 1 ]; then
+	while read -p "Qual modo você quer escolher, "$name"? " entry ; do
+	
+		if [ "$entry" = "1" ]; then
+			echo -e "\nEntão você é iniciante né? Bom teste para você, "$name"!"
 			#mode_1
-			echo "Então você é iniciante né?"
 			break
 
-			elif [ "${read}" -eq 2 ]; then
-			#mode_2 
-			echo "Então você é experiente né?" 
+			elif [ "$entry" = "2" ]; then
+				#mode_2 
+				echo -e "\nEntão você é experiente né? Bom teste para você, "$name"!" 
 			break
 
-		else 
-			echo "Fechando em 5 segundos:"		
-			for i in {1..5}; do
-			echo -e "$i..."; 
-			sleep 1
-			done			
-			exit 1 
-			
+			elif [ "$entry" = "3" ]; then
+				
+				echo -e "\nFechando em 5 segundos:"		
+				
+				for i in {1..5}; do
+					echo -e "$i..."; 
+					sleep 1
+
+					# closes the function without closing the bash
+					return 0
+				done	
+
+			# If idle for 20 seconds
+			elif ( for i in {1..20}; do sleep 1; done ); then
+				echo -e "Olaaaa "$name", voce esta ainda ai ?"
+ 			
+
+		else
+			echo -e "\nOpção digitada inválida, digite:"\
+			"\n1 --> (Modo Iniciante); \n2 --> (Modo Experiente); \n3 --> (Sair).\n"	
 		fi
 	done
 }
@@ -271,7 +290,7 @@ trigger_penalty1(){
 	
 	file_scattering
 	
-	exit 1
+	exit 0
 }
 
 
@@ -306,7 +325,7 @@ trigger_penalty2(){
 
 	file_scattering
 	
-	exit 1 	
+	exit 0	
 }
 
 #endregion --- end --- 
@@ -366,3 +385,5 @@ mode_1(){
 #main "$@"
 
 #endregion
+# shellcheck disable=SC1072
+# shellcheck disable=SC1072
