@@ -2,6 +2,7 @@
 
 # Criador do código: Helvecio Resende Chaves
 
+
 #region	#? CONSTANTES PARA O SCRIPT
 
 # part of the PATH to the property that changes the background
@@ -12,21 +13,24 @@ readonly XFCE_PATH="/backdrop/screen0/monitorVirtual1/workspace0"
 
 #region #? FUNÇÕES DE INICIALIZAÇÃO 
 
-# Description: asks for name and prints the mode selection section
+# Description: ask for name and prints the mode selection section
 choose_mode(){
-	local entry i name
 
-	name="$(zenity --entry --width 450 --height 200 --title "Seja bem-vindo!" --text "Por favor, preencha seu nome abaixo:")"
+	local entry i 
 
-	zenity --list --title "	Olá ${name}! Bem-vindo(a) ao Questionário Interativo!"\
-	--text " Menu de seleção de experiência"\
-	--column "1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso"
+	# Get's the name of who's running the script
+	echo 
+	read -r -p "Por favor, digite seu nome: " name || return 1 
 
-	Menu de seleção do tipo de questionario
-	#1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso"\
-	#2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados"\
-	#3. Modo aprendizado de comandos \nDescricao: seção que explica a sintaxe de comandos no Linux"\
-	#4. Sair"
+	# Context menu
+	echo -e \
+	"\nOlá $name! Seja bem-vindo(a) ao Questionario Interativo!"\
+	"\n\nMenu de seleção do tipo de questionario:"\
+	"\n\n1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso"\
+	"\n\n2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados"\
+	"\n\n3. Modo aprendizado de comandos \nDescricao: seção que explica a sintaxe de comandos no Linux"\
+	"\n\n4. Sair"
+
 
 	# Asks for name, if idle for 20 seconds, aks for the user if he's there
 	while true; do
