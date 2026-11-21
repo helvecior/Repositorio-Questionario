@@ -1,5 +1,11 @@
 # Questionario Interativo fluxograma versão original estrutura prévia
 
+Sumário
+
+- [Questionário Interativo — dois fluxogramas - nova estrutura](#questionário-interativo--dois-fluxogramas---nova-estrutura)
+- [Visão geral do código](#1-visão-geral-do-código)
+- [Processos e consequências descritos](#2-processos-e-consequências-descritos)
+
 Fluxograma baseado no script [`Questinario-Interativo`](./Questinario-Interativo), na branch `development-area`.
 
 ```mermaid
@@ -63,7 +69,11 @@ flowchart TB
 
 > # Questionário Interativo — dois fluxogramas - nova estrutura
 
-Baseado na versão de 21/11/2026 do script `Questinario-Interativo`. A **seta pontilhada** marca a chamada comentada de `mode_1`. Na execução atual, o Bash passa por `main` e `choose_mode`. As perguntas e seus efeitos pertencem ao ramo pontilhado.
+Baseado na versão de 21/11/2026, que possui uma nova estrutura baseada em modos, a primeira função adicionada foi a choose_mode, que permite ao usuário escolher (dentro do terminal), o modo que deseja jogar. A **seta pontilhada** marca a chamada comentada de `mode_1`. Na execução atual, o Bash passa por `main` e `choose_mode`. As perguntas e seus efeitos pertencem ao ramo pontilhado.
+Existem duas versões do fluxograma do código
+
+- uma mais generalista, provendo uma visão abrangente do jogo
+- outra mais específica, passando pelas consequências das funções e etapas
 
 ## 1. Visão geral do código
 
@@ -74,7 +84,7 @@ flowchart TB
     M -->|2 ou 3| O["Mostra mensagem do modo<br/>experiente ou aprendizado"]
     M -->|4| S["Faz contagem e sai"]
     M -->|Inválida| V["Mostra as opções e termina"]
-    I -.->|Chamada comentada| Q1{"Questionário iniciante<br/>Acertou a pergunta 1?"}
+    I -.->|ativa funcao mode_1| Q1{"Questionário iniciante<br/>Acertou a pergunta 1?"}
     Q1 -->|Não| E1["Penalidade 1<br/>A pergunta 2 fica bloqueada"]
     Q1 -->|Sim| Q2{"Acertou a pergunta 2?"}
     Q2 -->|Não| E2["Penalidade 2<br/>O fluxo fica no laço de janelas"]
@@ -100,7 +110,7 @@ flowchart TB
     O -->|2 ou 3| J["Mensagem do modo<br/>experiente ou aprendizado · echo"]
     O -->|4| K["Conta 5 segundos e encerra com código 0<br/>echo · sleep · return"]
     O -->|Inválida| L["Mostra as opções e termina<br/>printf"]
-    I -.->|Chamada comentada| Q["mode_1<br/>Ignora SIGINT e SIGTERM e exibe aviso<br/>trap_end_signal · trap · zenity"]
+    I -.->|ativa funcao mode_1| Q["mode_1<br/>Ignora SIGINT e SIGTERM e exibe aviso<br/>trap_end_signal · trap · zenity"]
     Q --> Q1{"P1 · Comando para criar pasta<br/>perguntar · zenity<br/>Resposta igual a mkdir?"}
     Q1 -->|Não| P1["trigger_penalty1<br/>Efeitos de erro e laço de janelas<br/>A pergunta 2 fica bloqueada"]
     Q1 -->|Sim| B["Confirma o primeiro acerto<br/>zenity"]
