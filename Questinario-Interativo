@@ -2,16 +2,15 @@
 
 # Criador do código: Helvecio Resende Chaves
 
-
-#region	#? CONSTANTES PARA O SCRIPT
+#region	#? CONSTANTS FOR THE SCRIPT
 
 # part of the PATH to the property that changes the background
 readonly XFCE_PATH="/backdrop/screen0/monitorVirtual1/workspace0"
 
-#endregion
+#endregion #! end
 
 
-#region #? FUNÇÕES DE INICIALIZAÇÃO 
+#region #? FUNCTIONS FOR USER INTERFACE
 
 # Description: ask for name and prints the mode selection section
 choose_mode(){
@@ -79,10 +78,16 @@ choose_mode(){
 		fi
 }
 
-#endregion --- end --- 
+# Description: present a zenity entry dialog to the user and returns the input for the quiz
+# Arguments: $1 - The title, $2 - The question text
+perguntar(){
+	zenity --entry --height 300 --width 500 --title "$1" --text "$2"
+}
+
+#endregion #! end 
 
 
-#region	#? FUNÇÕES DE EFEITOS DE TELA 
+#region	#? FUNCTIONS FOR VISUAL EFFECTS 
 
 # Description: modifies the timer, period and enables cycling between the wallpaper images, creates new properties in case they don't exist. 
 wallpaper_effect_on(){
@@ -108,15 +113,24 @@ wallpaper_effect_on(){
 
 # Description: opens tons of files in xed and moves them around the screen. 
 file_scattering(){
+	local i=0
 
 	while true; do 
 		x=$((RANDOM % 1366))
 		y=$((RANDOM % 720))
 		z=$((RANDOM % 400 + 1))
 		xed --new-window ~/Desktop/$z.txt 
-		# sleep 0.125
 		wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
 		wmctrl -r :ACTIVE: -e 0,"$x","$y",50,50;
+		
+		sleep 0.125
+
+		((i++))
+
+		if ((i>480)); then
+			break
+		fi
+
 	done 
 }
 
@@ -145,12 +159,9 @@ right_answer_effect(){
 	#sets the kind of display image pattern
 	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/image-style -s 2 &
 
-
-	readonly XFCE_PATH="/backdrop/screen0/monitorVirtual1/workspace0"
-
 	while true; do 
 		
-		used_images=(
+		local used_images=(
 		"$HOME/Downloads/prateado.jpeg"
 		"$HOME/Downloads/parabens.jpeg"
 		"$HOME/Downloads/correto.jpeg" 
@@ -170,55 +181,21 @@ right_answer_effect(){
 
 		xfconf-query -c xfce4-desktop -p "${XFCE_PATH}/last-image" -s "${used_images[x]}"
 
-		#((++i))
-#
-		#if ((i>=120)); then
-		#	break
-		#fi
+		((++i))
+
+		if ((i>=120)); then
+			break
+		fi
 		
 		sleep 0.500
 
 	done 
 }
 
-#endregion --- end --- 
+#endregion #! end 
 
 
-#region #? FUNÇÕES DE DISPLAY
-
-# Description: this function displays a xcowsay with variable cow size, image and an specified text message.
-# Also presents a custom font for the message.
-# Arguments: $1 - The cow size (small, med, large), $2 - The image path, $3 - The message to display
-xcowsay_size_image_dialog(){
-	xcowsay -t 5 --font "MathJax-Caligraphic 23" --cow-size "$1" --image "$2" "$3"
-}
-
-
-# Description: this function displays a zenity warning dialog with a specified message and moves it around the screen, creating a chaotic effect.
-# Arguments: $1= text shown in the warning
-zenity_scatter(){
-
-	for i in {1..50}; do
-	local x=$((RANDOM % 1366))
-	local y=$((RANDOM % 720))
-	local z=$((RANDOM % 150 + 1))
-	local w=$((RANDOM % 150 + 1))
-	zenity --warning --height 25 --width 75 --text "$1" &
-	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
-	wmctrl -r :ACTIVE: -e 0,$x,$y,$z,$w &
-	done
-}
-
-
-# Description: present a zenity entry dialog to the user and returns the input for the quiz
-# Arguments: $1 - The title, $2 - The question text
-perguntar(){
-	zenity --entry --height 300 --width 500 --title "$1" --text "$2"
-}
-#endregion --- end --- 
-
-
-#region #? FUNÇÕES DE CRIAÇÃO
+#region #? FUNCTIONS FOR GENERATING
 
 # Description: makes tons of directories
 dir_maker(){
@@ -239,10 +216,10 @@ report_generator(){
 	xed ~/Desktop/jornada.txt
 }
 
-#endregion --- end --- 
+#endregion #! end 
 
 
-#region #? FUNÇÕES DE CONCLUSÃO 
+#region #? FUNCTIONS FOR CONCLUSION 
 # Description: stage when all answers are right and executes a set of procedures that indicate the success
 complete_challenge(){
 	xfconf-query -c xfce4-desktop -p "${XFCE_PATH}"/last-image -s ~/Downloads/parabens.jpeg;
@@ -259,10 +236,10 @@ complete_challenge(){
 	zenity --info --height 150 --width 300 --title "Script criado por Helvecio Resende Chaves"\
 	--text "Obrigado por participar do meu desafio, espero que tenha se divertido!"
 }
-#endregion --- end --- 
+#endregion #! end 
 
 
-#region	#? FUNÇÕES DE DESABILITAR
+#region	#? FUNCTIONS FOR DISABLING CONFIGURATIONS
 
 
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
@@ -280,10 +257,10 @@ disable_input_devices(){
 	done
 }
 
-#endregion --- end --- 
+#endregion #! end 
 
 
-#region	#? FUNÇÕES DE PENALIDADES
+#region	#? FUNCTIONS FOR PENALIDADES
 
 # Description: first penalty if wrong input in 1st question
 trigger_penalty1(){
@@ -341,10 +318,10 @@ trigger_penalty2(){
 	file_scattering
 }
 
-#endregion --- end --- 
+#endregion #! end 
 
 
-#region	#? MODE FUNCTIONS
+#region #? MODE FUNCTIONS
 
 # Description: was the previous main function, due to expasion of more modes, made into mode-1
 mode_1(){
@@ -369,7 +346,6 @@ mode_1(){
 	pense antes, não haverá segundas chances...")"
  	
 	if [ "${answer2}" = "chmod" ]; then
-		
 		zenity --info --height 150 --width 300 --title "Correto" --text "Parabéns, resposta correta!!"
 		right_answer_effect &
 
@@ -385,7 +361,7 @@ mode_1(){
 
 #mode_3(){}
 
-#endregion
+#endregion #! end
 
 
 #region	#? MAIN
@@ -397,5 +373,4 @@ main(){
 
 main "$@"
 
-#endregion
-
+#endregion #! end
