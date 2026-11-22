@@ -21,13 +21,13 @@ choose_mode(){
 	echo 
 	read -r -p "Por favor, digite seu nome: " name || return 1 
 
-	# Context menu
-	echo -e \
+	# Menu that shows the options for proceeding
+	echo -e\
 	"\nOlá $name! Seja bem-vindo(a) ao Questionario Interativo!"\
 	"\n\nMenu de seleção do tipo de questionario:"\
 	"\n\n1. Quero o mais facil \nDescriçao: comandos simples, respostas por extenso"\
-	"\n\n2. Quero me provar \nDescricao: selecione entre 4 alternativas, comandos mais variados"\
-	"\n\n3. Modo aprendizado de comandos \nDescricao: seção que explica a sintaxe de comandos no Linux"\
+	"\n\n2. Quero me experimentar \nDescricao: mão-na-massa, experiência real, comandos mais variados"\
+	"\n\n3. Modo Conhecendo o Algoritmo \nDescricao: seção que explica a sintaxe de comandos no Linux"\
 	"\n\n4. Sair"
 
 
@@ -45,17 +45,21 @@ choose_mode(){
 		break
 	done
 
+		#todo atualizar a parte abaixo
 		if [[ "$entry" == "1" ]]; then
 			echo -e "\nEntão você é iniciante né? Bom teste para você, ${name}!"
-			#mode_1
+			mode_open_quiz
+
 
 		elif [[ "$entry" == "2" ]]; then
 			#mode_2 
 			echo -e "\nEntão você é experiente né? Bom teste para você, ${name}!" 
-		
+
+
 		elif [[ "$entry" == "3" ]]; then
 			#mode_3
 			echo -e "\nMuito bem ${name}! Vamos começar a jornada de aprendizado dos comandos no Bash."
+
 
 		# closes the function without closing the bash
 		elif [[ "$entry" == "4" ]]; then
@@ -66,7 +70,7 @@ choose_mode(){
 			done	
 				return 0
 
-		else 
+		else #! adicionar as modificações de acordo com a parte acima l-26-31
 			printf '\n%s'\
 			'Opção digitada inválida, digite:'\
 			''\
@@ -192,7 +196,7 @@ right_answer_effect(){
 	done 
 }
 
-#endregion #! end 
+#endregion #! end  
 
 
 #region #? FUNCTIONS FOR GENERATING
@@ -216,7 +220,7 @@ report_generator(){
 	xed ~/Desktop/jornada.txt
 }
 
-#endregion #! end 
+#endregion #! end  
 
 
 #region #? FUNCTIONS FOR CONCLUSION 
@@ -236,7 +240,7 @@ complete_challenge(){
 	zenity --info --height 150 --width 300 --title "Script criado por Helvecio Resende Chaves"\
 	--text "Obrigado por participar do meu desafio, espero que tenha se divertido!"
 }
-#endregion #! end 
+#endregion #! end  
 
 
 #region	#? FUNCTIONS FOR DISABLING CONFIGURATIONS
@@ -257,7 +261,7 @@ disable_input_devices(){
 	done
 }
 
-#endregion #! end 
+#endregion #! end  
 
 
 #region	#? FUNCTIONS FOR PENALIDADES
@@ -318,13 +322,13 @@ trigger_penalty2(){
 	file_scattering
 }
 
-#endregion #! end 
+#endregion #! end  
 
 
 #region #? MODE FUNCTIONS
 
 # Description: was the previous main function, due to expasion of more modes, made into mode-1
-mode_1(){
+mode_open_quiz(){
 	trap_end_signal
 
 	zenity --info --height 300 --width 500 --title "Aviso" --text "O teste começará agora, boa sorte!"
@@ -357,7 +361,23 @@ mode_1(){
 
 }
 
-#mode_2(){}
+mode_2(){
+	wmctrl ctrl + l
+
+	echo -e "O teste começou agora, dê uma olhada no seu Desktop"
+	wmctrl ctrl + alt + t 
+	echo -e\
+	"Como você fará para limpar ele?\n"\
+	"1. rm -rf ~/Desktop/* \n 
+	"2. sudo rm -f \n" 
+	"3. sudo rm -fr ~/Desktop/*.dir\n
+	"4. rm -rf ~/Desktop" 
+	
+	 #todo completar usando printf 
+
+}
+
+
 
 #mode_3(){}
 
