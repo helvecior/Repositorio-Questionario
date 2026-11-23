@@ -44,10 +44,13 @@ get_name_show_menu(){
 }
 	
 
-# Intent: Processes the input of incited by get_name_show_menufunction, if idle for 20 seconds, aks for the user if he's there
+# Description: processes the input of the user and executes the corresponding mode, if idle for 20 seconds, asks for the user if he's there
+# Intent: Processes the input of incited by get_name_show_menu function, if idle for 20 seconds, aks for the user if he's there
 #! adicionar a opção de cancelar o modo escolhido enquanto está na contagem para abrir
 
 selected_mode_processing(){
+
+	xdotool key "ctrl+l"
 
 	if [[ "${option_selected}" == "1" ]]; then
 		echo -e "\nVamos começar então! Bom teste para você, ${name}!\n \
@@ -124,7 +127,6 @@ question_prompt(){
 		echo -e "\nResposta incorreta, tente novamente!"
 	fi
 
-#! refactor the current question_prompt structure.
 }
 
 #endregion #! end 
@@ -187,11 +189,13 @@ icon_desktop_size_effect(){
 		xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -s "${size}";
 		sleep 0.20
 
-		#((++i))
-#
-		#if ((i>=6000)); then
-		#	break
-		#fi
+		local i=0
+
+		((++i))
+		
+		if ((i>=6000)); then
+			break
+		fi
 
 	done &
 }
@@ -223,6 +227,8 @@ right_answer_effect(){
 		local x="$((RANDOM % 13))"
 
 		xfconf-query -c xfce4-desktop -p "${XFCE_PATH}/last-image" -s "${used_images[x]}"
+
+		local i=0
 
 		((++i))
 
@@ -283,7 +289,6 @@ complete_challenge(){
 
 
 #region	#? FUNCTIONS FOR INTERRUPTING//DISABLING CONFIGURATIONS
-
 
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 trap_end_signal(){
@@ -404,13 +409,15 @@ mode_open_quiz(){
 
 mode_2(){	
 	
-	wmctrl ctrl + l
-	mkdir
+	xdotool key "ctrl+l"
+	dir_maker
 	
 	echo -e "O teste começou agora, dê uma olhada no seu Desktop"
 	sleep 5
-	wmctrl ctrl + alt + t 
-	
+	xdotool key "ctrl+alt+t" 
+	echo -e "Como você vai fazer para apagar essas pastas que foram criadas ?"
+	question_prompt rm ~/Desktop/* rm -f ~/Desktop/* rm -rf ~/Desktop/* rmdir ~/Desktop/* "Aqui tem algumas opções de remoção das pastas" 2
+
 	# questionfunction
 	
 }
