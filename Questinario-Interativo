@@ -65,7 +65,7 @@ selected_mode_processing(){
 		for i in {1..5}; do 
 			echo "$i..."
 		done
-		#!mode_2 
+		mode_2 
 
 	elif [[ "${option_selected}" == "3" ]]; then
 		echo -e "\nInteressante ${name}! Gosteu da curiosidade, vamos conhecer algumas partes\
@@ -103,6 +103,34 @@ selected_mode_processing(){
 perguntar(){
 	zenity --entry --height 300 --width 500 --title "$1" --text "$2"
 }
+
+
+# Description:  
+# Arguments: $1 - option 1, $2 - option 2, $3 - option 3, $4 - option 4, $5 - question text, $6 - the numbers of the correct answer parameter 
+question_prompt(){
+# todo fazer uma função para as questões
+##!usar echo com modelo para titulo
+
+	local current_answer
+	read -p "Questão n. : $5?:" current_answer
+	
+	echo -e "\\	
+	1. $1\n \
+	2. $2\n \
+	3. $3\n \
+	4. $4\ "
+
+	if  [[ "${current_answer}" == "$6" ]]; then
+		echo -e "\nParabéns, resposta correta!!"
+	else
+		echo -e "\nResposta incorreta, tente novamente!"
+	fi
+
+}
+
+
+
+
 
 #endregion #! end 
 
@@ -261,21 +289,6 @@ complete_challenge(){
 
 #region	#? FUNCTIONS FOR INTERRUPTING//DISABLING CONFIGURATIONS
 
-# Description: this function returns to other function process and prints a text info
-# Arguments: $1 the desired function name | $2 the text you want to appear    
-#todo ENCONTRAR UMA MANEIRA DE VOLTAR AO LOOP CASO HAJA UMA ENTRADA 
-	#! terminar de escrever essa parte 
-	#! verificar se esse é o lugar correto para essa função
-
-return_previous_func_info(){
-	
-	elif [[ "$(read)" == "c" ]]; then
-	echo -e "$2"
-	sleep 1 
-	"$1"
-
-}
-
 
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
 trap_end_signal(){
@@ -297,7 +310,7 @@ disable_input_devices(){
 #endregion #! end  
 
 
-#region	#? FUNCTIONS FOR PENALIDADES
+#region	#? FUNCTIONS FOR PENALTIES
 
 # Description: first penalty if wrong input in 1st question
 trigger_penalty1(){
@@ -394,25 +407,22 @@ mode_open_quiz(){
 
 }
 
-mode_2(){
-	wmctrl ctrl + l
-
-	echo -e "O teste começou agora, dê uma olhada no seu Desktop"
-	wmctrl ctrl + alt + t 
-	echo -e\
-	"Como você fará para limpar ele?\n"\
-	"1. rm -rf ~/Desktop/* \n 
-	"2. sudo rm -f \n" 
-	"3. sudo rm -fr ~/Desktop/*.dir\n
-	"4. rm -rf ~/Desktop" 
+mode_2(){	
 	
-	 #todo completar usando printf 
-
+	wmctrl ctrl + l
+	mkdir
+	
+	echo -e "O teste começou agora, dê uma olhada no seu Desktop"
+	sleep 5
+	wmctrl ctrl + alt + t 
+	
+	# questionfunction
+	
 }
 
 
-
-#mode_3(){}
+#mode_3(){
+}
 
 #endregion #! end
 
