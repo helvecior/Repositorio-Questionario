@@ -12,10 +12,8 @@ readonly XFCE_PATH="/backdrop/screen0/monitorVirtual1/workspace0"
 
 #region #? FUNCTIONS FOR USER INTERFACE
 
-# Description: ask for name and prints the mode selection section
-choose_mode(){
-
-	local entry i 
+# Description: ask for name and prints the mode selection section 
+get_name_show_menu(){
 
 	# Get's the name of who's running the script
 	echo 
@@ -30,79 +28,75 @@ choose_mode(){
 	"\n\n3. Modo Conhecendo o Algoritmo \nDescricao: seção que explica a sintaxe de comandos no Linux"\
 	"\n\n4. Sair"
 
+	while true; do
+		read -r -t 10 -p "Qual opção deseja escolher, ${name}? " option_selected
+		local read_status=$?
 
-	# Description: Local function, won't be put outside the choose_mode function
-	# Asks for name, if idle for 20 seconds, aks for the user if he's there
-	main_menu(){
-		
-		while true; do
-			echo 
-			read -r -t 20 -p "Qual opcao deseja escolher, ${name}? " entry || {
-			
-			read_status=$?
-			if (( "$read_status" > 128 )); then 
-				echo -e "\n\nOlaaaa ${name}, voce esta ainda ai ?"
-				continue 
-			fi
-			}
+		# prompts message if idle 
+		if (( "${read_status}" > 128 )); then
+			echo -e "\n\nOlaaaa ${name}, você está ainda ai ?"
+		else 
 			break
+		fi
+
+	selected_mode_processing
+	done
+}
+	
+
+# Intent: Processes the input of incited by get_name_show_menufunction, if idle for 20 seconds, aks for the user if he's there
+#! adicionar a opção de cancelar o modo escolhido enquanto está na contagem para abrir
+
+selected_mode_processing(){
+
+	if [[ "${option_selected}" == "1" ]]; then
+		echo -e "\nVamos começar então! Bom teste para você, ${name}!\n \
+		\nAbrindo em 5 segundos:        \nPressione c para cancelar"
+
+		for i in {1..5}; do 
+			echo "$i..."
+		done
+			mode_open_quiz
+
+	elif [[ "${option_selected}" == "2" ]]; then
+		echo -e "\nEntão você gosta de mão na massa ?! Bom teste, ${name}!\n \
+		\nAbrindo em 5 segundos:        \nPressione c para cancelar"
+
+		for i in {1..5}; do 
+			echo "$i..."
+		done
+		#!mode_2 
+
+	elif [[ "${option_selected}" == "3" ]]; then
+		echo -e "\nInteressante ${name}! Gosteu da curiosidade, vamos conhecer algumas partes\
+		desse script que estamos executando no momento.\n\
+		\nAbrindo em 5 segundos:        \nPressione c para cancelar"
+
+		for i in {1..5}; do 
+			echo "$i..."
 		done
 
-			#! adicionar a opção de cancelar o modo escolhido enquanto está na contagem para abrir
+		#!mode_3
 
-			if [[ "$entry" == "1" ]]; then
-				echo -e "\nVamos começar então! Bom teste para você, ${name}!\n \
-				\nAbrindo em 5 segundos:        \nPressione c para cancelar"
+	elif [[ "${option_selected}" == "4" ]]; then
+		echo -e "\nFechando em 5 segundos:"		
+		for i in {1..5}; do
+			echo -e "$i..."; 
+		done
+			return 0
 
-				for i in {1..5}; do 
-					echo "$i..."
-					sleep 1
-				done
-					mode_open_quiz
-
-			elif [[ "$entry" == "2" ]]; then
-				echo -e "\nEntão você gosta de mão na massa ?! Bom teste, ${name}!\n \
-				\nAbrindo em 5 segundos:        \nPressione c para cancelar"
-
-				for i in {1..5}; do 
-					echo "$i..."
-					sleep 1
-				done
-				#!mode_2 
-
-			elif [[ "$entry" == "3" ]]; then
-				echo -e "\nInteressante ${name}! Gosteu da curiosidade, vamos conhecer algumas partes\
-				desse script que estamos executando no momento.\n\
-				\nAbrindo em 5 segundos:        \nPressione c para cancelar"
-
-				for i in {1..5}; do 
-					echo "$i..."
-					sleep 1
-				done
-
-				#!mode_3
-
-			# closes the function without closing the bash
-			elif [[ "$entry" == "4" ]]; then
-				echo -e "\nFechando em 5 segundos:"		
-				for i in {1..5}; do
-					echo -e "$i..."; 
-					sleep 1
-				done
-					return 0
-
-			else
-				printf '\n%s'\
-				'Opção digitada inválida, digite:'\
-				''\
-				'1 --> Modo fácil'\
-				'2 --> Modo experimentaç'\
-				'3 --> Modo conhecendo o algoritmo'\
-				'4 --> Sair'\
-				''
-			fi
-	}
+	else
+		printf '\n%s'\
+		'Opção digitada inválida, digite:'\
+		''\
+		'1 --> Modo fácil'\
+		'2 --> Modo experimentação'\
+		'3 --> Modo conhecendo o algoritmo'\
+		'4 --> Sair'\
+		''
+	fi
 }
+
 
 # Description: present a zenity entry dialog to the user and returns the input for the quiz
 # Arguments: $1 - The title, $2 - The question text
@@ -273,7 +267,7 @@ complete_challenge(){
 	#! terminar de escrever essa parte 
 	#! verificar se esse é o lugar correto para essa função
 
-return_previous_fn_info(){
+return_previous_func_info(){
 	
 	elif [[ "$(read)" == "c" ]]; then
 	echo -e "$2"
@@ -427,7 +421,7 @@ mode_2(){
 # Description: Orchestrates the quiz stages and validates user answers.
 # Description: transformed into mode-1
 main(){ 
-	choose_mode
+	get_name_show_menu
 }
 
 main "$@"
