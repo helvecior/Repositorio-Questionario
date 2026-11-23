@@ -70,7 +70,6 @@ choose_mode(){
 				done
 				#!mode_2 
 
-
 			elif [[ "$entry" == "3" ]]; then
 				echo -e "\nInteressante ${name}! Gosteu da curiosidade, vamos conhecer algumas partes\
 				desse script que estamos executando no momento.\n\
@@ -80,15 +79,6 @@ choose_mode(){
 					echo "$i..."
 					sleep 1
 				done
-
-				#todo ENCONTRAR UMA MANEIRA DE VOLTAR AO LOOP CASO HAJA UMA ENTRADA 
-				#! terminar de escrever essa parte 
-				#! verificar se esse é o lugar correto para essa função
-			# cancels the process of starting any of the modes
-				elif [[ "$(read)" == "c" ]]; then
-				echo -e "\nProcesso cancelado, voltando ao menu de seleção:"
-				sleep 1 
-				main_menu
 
 				#!mode_3
 
@@ -276,6 +266,21 @@ complete_challenge(){
 
 
 #region	#? FUNCTIONS FOR INTERRUPTING//DISABLING CONFIGURATIONS
+
+# Description: this function returns to other function process and prints a text info
+# Arguments: $1 the desired function name | $2 the text you want to appear    
+#todo ENCONTRAR UMA MANEIRA DE VOLTAR AO LOOP CASO HAJA UMA ENTRADA 
+	#! terminar de escrever essa parte 
+	#! verificar se esse é o lugar correto para essa função
+
+return_previous_fn_info(){
+	
+	elif [[ "$(read)" == "c" ]]; then
+	echo -e "$2"
+	sleep 1 
+	"$1"
+
+}
 
 
 # Description: traps signals from ctrl+c (SIGINT) and pkill or kill (SIGTERM)
