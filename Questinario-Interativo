@@ -108,8 +108,6 @@ perguntar(){
 # Description:  
 # Arguments: $1 - option 1, $2 - option 2, $3 - option 3, $4 - option 4, $5 - question text, $6 - the numbers of the correct answer parameter 
 question_prompt(){
-# todo fazer uma função para as questões
-##!usar echo com modelo para titulo
 
 	local current_answer
 	read -p "Questão n. : $5?:" current_answer
@@ -126,11 +124,8 @@ question_prompt(){
 		echo -e "\nResposta incorreta, tente novamente!"
 	fi
 
+#! refactor the current question_prompt structure.
 }
-
-
-
-
 
 #endregion #! end 
 
@@ -421,8 +416,7 @@ mode_2(){
 }
 
 
-#mode_3(){
-}
+#mode_3(){}
 
 #endregion #! end
 
