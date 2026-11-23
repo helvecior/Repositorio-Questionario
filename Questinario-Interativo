@@ -15,7 +15,8 @@ readonly XFCE_PATH="/backdrop/screen0/monitorVirtual1/workspace0"
 # Description: ask for name and prints the mode selection section 
 get_name_show_menu(){
 
-	# Get's the name of who's running the script
+	xdotool key "ctrl+alt+t"
+
 	echo 
 	read -r -p "Por favor, digite seu nome: " name || return 1 
 
@@ -28,29 +29,18 @@ get_name_show_menu(){
 	"\n\n3. Modo Conhecendo o Algoritmo \nDescricao: seção que explica a sintaxe de comandos no Linux"\
 	"\n\n4. Sair"
 
-	while true; do
-		read -r -t 10 -p "Qual opção deseja escolher, ${name}? " option_selected
-		local read_status=$?
-
-		# prompts message if idle 
-		if (( "${read_status}" > 128 )); then
-			echo -e "\n\nOlaaaa ${name}, você está ainda ai ?"
-		else 
-			break
-		fi
+	read -r -t 10 -p "Qual opção deseja escolher, ${name}? " option_selected
+	local read_status=$?
 
 	selected_mode_processing
-	done
 }
 	
 
 # Description: processes the input of the user and executes the corresponding mode, if idle for 20 seconds, asks for the user if he's there
-# Intent: Processes the input of incited by get_name_show_menu function, if idle for 20 seconds, aks for the user if he's there
+# Intent: Processes the input of incited by get_name_show_men function, if idle for 20 seconds, aks for the user if he's there
 #! adicionar a opção de cancelar o modo escolhido enquanto está na contagem para abrir
 
 selected_mode_processing(){
-
-	xdotool key "ctrl+l"
 
 	if [[ "${option_selected}" == "1" ]]; then
 		echo -e "\nVamos começar então! Bom teste para você, ${name}!\n \
@@ -58,6 +48,7 @@ selected_mode_processing(){
 
 		for i in {1..5}; do 
 			echo "$i..."
+			sleep 1
 		done
 			mode_open_quiz
 
@@ -67,6 +58,7 @@ selected_mode_processing(){
 
 		for i in {1..5}; do 
 			echo "$i..."
+			sleep 1
 		done
 		mode_2 
 
@@ -77,26 +69,19 @@ selected_mode_processing(){
 
 		for i in {1..5}; do 
 			echo "$i..."
+			sleep 1 
 		done
 
-		#!mode_3
+		echo -e "\n\nO modo de conhecimento do algoritmo ainda não foi implementado, aguarde futuras atualizações do script."
 
 	elif [[ "${option_selected}" == "4" ]]; then
 		echo -e "\nFechando em 5 segundos:"		
 		for i in {1..5}; do
 			echo -e "$i..."; 
+			sleep 1
 		done
 			return 0
 
-	else
-		printf '\n%s'\
-		'Opção digitada inválida, digite:'\
-		''\
-		'1 --> Modo fácil'\
-		'2 --> Modo experimentação'\
-		'3 --> Modo conhecendo o algoritmo'\
-		'4 --> Sair'\
-		''
 	fi
 }
 
@@ -105,28 +90,6 @@ selected_mode_processing(){
 # Arguments: $1 - The title, $2 - The question text
 perguntar(){
 	zenity --entry --height 300 --width 500 --title "$1" --text "$2"
-}
-
-
-# Description:  
-# Arguments: $1 - option 1, $2 - option 2, $3 - option 3, $4 - option 4, $5 - question text, $6 - the numbers of the correct answer parameter 
-question_prompt(){
-
-	local current_answer
-	read -p "Questão n. : $5?:" current_answer
-	
-	echo -e "\\	
-	1. $1\n \
-	2. $2\n \
-	3. $3\n \
-	4. $4\ "
-
-	if  [[ "${current_answer}" == "$6" ]]; then
-		echo -e "\nParabéns, resposta correta!!"
-	else
-		echo -e "\nResposta incorreta, tente novamente!"
-	fi
-
 }
 
 #endregion #! end 
@@ -409,21 +372,20 @@ mode_open_quiz(){
 
 mode_2(){	
 	
-	xdotool key "ctrl+l"
 	dir_maker
 	
-	echo -e "O teste começou agora, dê uma olhada no seu Desktop"
-	sleep 5
-	xdotool key "ctrl+alt+t" 
-	echo -e "Como você vai fazer para apagar essas pastas que foram criadas ?"
-	question_prompt rm ~/Desktop/* rm -f ~/Desktop/* rm -rf ~/Desktop/* rmdir ~/Desktop/* "Aqui tem algumas opções de remoção das pastas" 2
+	echo -e "\n\nO teste começou agora, dê uma olhada no seu Desktop"
+	wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz;
+	wmctrl -r :ACTIVE: -e 0,-1,-1,300,300;
+	sleep 3
 
-	# questionfunction
+	wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz;
+	xcowsay -t 7 "volte para o terminal e responda a pergunta"
+
+	read -p "Como você vai fazer para apagar essas pastas que foram criadas ? Escreva aqui --> " current_answer
+	echo -e "Verifique se sua respsta está correta, se estiver, as pastas terão sido apagadas, caso contrário."
 	
 }
-
-
-#mode_3(){}
 
 #endregion #! end
 
