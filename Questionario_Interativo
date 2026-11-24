@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Criador do código: Helvecio Resende Chaves
 
@@ -15,14 +15,11 @@ readonly XFCE_PATH="/backdrop/screen0/monitorVirtual1/workspace0"
 # Description: ask for name and prints the mode selection section 
 get_name_show_menu(){
 
-	xdotool key "ctrl+alt+t"
-
 	echo 
-	read -r -p "Por favor, digite seu nome: " name || return 1 
+	read -r -p "Por favor, digite seu nome: " name
 
 	# Menu that shows the options for proceeding
-	echo -e\
-	"\nOlá $name! Seja bem-vindo(a) ao Questionario Interativo!"\
+	echo -e	"\nOlá $name! Seja bem-vindo(a) ao Questionario Interativo!"\
 	"\n\nMenu de seleção do tipo de questionario:"\
 	"\n\n1. Quero o mais simples \nDescriçao: comandos comuns, respostas por extenso"\
 	"\n\n2. Quero me experimentar \nDescricao: mão-na-massa, experiência real, comandos mais variados"\
